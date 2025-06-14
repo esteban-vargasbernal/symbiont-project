@@ -554,7 +554,8 @@ def many_simulations_with_mutations(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_ce
             's_sym_in', 'h_sym_in', 'e_sym_in',
                 'theta_cell', 'theta_sym', 'scenario',
                 'scenario_start','scenario_end',
-                'epsilon_cell', 'epsilon_sym']
+                'epsilon_cell', 'epsilon_sym',
+                'e_cell_0', 'e_sym_0']
     
     df = pd.DataFrame(columns = col_names)
 
@@ -567,6 +568,8 @@ def many_simulations_with_mutations(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_ce
         print('')
         df_tmp = model_symbionts_with_mutation(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym,W_in, W_out, x_mut, N_gen)
         df_tmp['sim'] = N_gen*[j]
+        df_tmp['e_cell_0'] =  np.round(df_tmp['e_cell'].iloc[0],2)
+        df_tmp['e_sym_0'] = np.round(df_tmp['e_sym_in'].iloc[0],2)
         df = pd.concat([df,df_tmp])
     
     return(df)
@@ -643,7 +646,7 @@ if __name__ == "__main__":
 
     np.random.seed()
 
-    N_gen = 10000
+    N_gen = 10
 
 
     N = 10**(3)
@@ -691,7 +694,7 @@ if __name__ == "__main__":
 
     #n_args = 4
 
-    N_sim = 20
+    N_sim = 2
     
     e_sym_tmp = np.linspace(-0.75,0.25,6)
     e_cell_tmp = np.linspace(-0.75,0.25,6)
@@ -723,7 +726,9 @@ if __name__ == "__main__":
     df = pd.concat(all_dfs)
 
 
-    df.to_csv('evarga32@asu.edu - Google Drive/My Drive/one_drive/Postdoc_July_28_2024/Adrian/Symbionts_v4/Data/df_N_'+ str(N) +'.csv', index=False)
+    #df.to_csv('evarga32@asu.edu - Google Drive/My Drive/one_drive/Postdoc_July_28_2024/Adrian/Symbionts_v4/Data/df_N_'+ str(N) +'.csv', index=False)
+    #df.to_csv('/home/vargasbernal.1/Symbionts_on_demand_osu/Data/df_small_N_'+ str(N) +'.csv', index=False)
 
+    df.to_csv('/Users/estebanvargasbernal/Documents/github/symbiont-project/Data/df_N_'+ str(N) +'.csv', index=False)
 
     print("total time = "+str(end_time - start_time))
