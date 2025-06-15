@@ -574,3 +574,5 @@ def many_simulations_with_mutations(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_ce
     
     return(df)
         
+def pairwise_combinations(vector1, vector2):
+    return np.array(list(itertools.product(vector1, vector2)))
