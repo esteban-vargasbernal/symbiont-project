@@ -5,14 +5,15 @@ import math
 import copy
 import random
 import pandas as pd
-
-
+import multiprocessing
+import os
+import time 
+import itertools
 
 import sys
-import numpy
 
 
-#################
+
 
 def death_cells(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell):
     
@@ -454,271 +455,9 @@ def mean_or_zero(data):
        else:
            return np.mean(data)
 
-################# Two symbiont types/ one host 
-
-def model_symbionts(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym,W_in, W_out, x_mut, N_gen,s_for_cells, h_for_cells, e_for_cells, p_large_h, s_for_symbionts, h_max, e_for_h_max, h_min, e_for_h_min):
-
-    x_alive_tmp = x_alive
-    x_cell_tmp =  x_cell
-    x_sym_in_tmp = x_sym_in
-    x_sym_out_tmp = x_sym_out
-    
-    col_names = ['generation', 'alive_cell', 'alive_sym_in', 'alive_sym_out',
-           'sym_in_type_I', 'sym_in_type_II', 'sym_in_dead',
-           'sym_out_type_I', 'sym_out_type_II', 'sym_out_dead',
-           'fitness_cell', 'fitness_sym_in_type_I', 'fitness_sym_out_type_I', 'fitness_type_I',
-           'fitness_sym_in_type_II', 'fitness_sym_out_type_II', 'fitness_type_II']
-    
-    df = pd.DataFrame(columns = col_names)
-
-    for i in np.arange(N_gen):
-        
-        generation = i
-
-        alive_cell = len(np.where(x_alive_tmp['cell']==1)[0])
-        alive_sym_in = len(np.where(x_alive_tmp['sym_in']==1)[0])
-        alive_sym_out = len(np.where(x_alive_tmp['sym_out']==1)[0])
-
-        sym_in_type_I = len(np.where(np.logical_and(x_sym_in_tmp['h']==h_max, x_sym_in_tmp['e']==e_for_h_max))[0])
-        sym_in_type_II = len(np.where(np.logical_and(x_sym_in_tmp['h']==h_min, x_sym_in_tmp['e']==e_for_h_min))[0])
-        sym_in_dead = len(np.where(x_sym_in_tmp['h']==0)[0])
-
-        sym_out_type_I = len(np.where(np.logical_and(x_sym_out_tmp['h']==h_max, x_sym_out_tmp['e']==e_for_h_max))[0])
-        sym_out_type_II = len(np.where(np.logical_and(x_sym_out_tmp['h']==h_min, x_sym_out_tmp['e']==e_for_h_min))[0])
-        sym_out_dead = len(np.where(x_sym_out_tmp['h']==0)[0])
-
-        fit = fitness(N,c,M,x_alive_tmp,x_cell_tmp,x_sym_in_tmp,x_sym_out_tmp)
-
-        fitness_cell = mean_or_zero(fit['cell'])
-
-        fitness_sym_in_type_I =  mean_or_zero(fit['sym_in'][np.where(np.logical_and(x_sym_in_tmp['h']==h_max, x_sym_in_tmp['e']==e_for_h_max))])
-        fitness_sym_in_type_II = mean_or_zero(fit['sym_in'][np.where(np.logical_and(x_sym_in_tmp['h']==h_min, x_sym_in_tmp['e']==e_for_h_min))])
-
-        fitness_sym_out_type_I = mean_or_zero(fit['sym_out'][np.where(np.logical_and(x_sym_out_tmp['h']==h_max, x_sym_out_tmp['e']==e_for_h_max))])
-        fitness_sym_out_type_II = mean_or_zero(fit['sym_out'][np.where(np.logical_and(x_sym_out_tmp['h']==h_min, x_sym_out_tmp['e']==e_for_h_min))])
-
-        fitness_type_I = mean_or_zero([fitness_sym_in_type_I, fitness_sym_out_type_I])
-        fitness_type_II = mean_or_zero([fitness_sym_out_type_I, fitness_sym_out_type_II])
-
-        data_tmp = [generation, alive_cell, alive_sym_in, alive_sym_out,
-                   sym_in_type_I, sym_in_type_II, sym_in_dead,
-                   sym_out_type_I, sym_out_type_II, sym_out_dead,
-                   fitness_cell, fitness_sym_in_type_I, fitness_sym_out_type_I, fitness_type_I,
-                   fitness_sym_in_type_II, fitness_sym_out_type_II, fitness_type_II]
-        
-        df.loc[i] = data_tmp
-        
-        
-        
-        #np.random.seed(123 + 100*i)
-        x_alive_tmp,x_cell_tmp,x_sym_in_tmp,x_sym_out_tmp =one_generation(N,c,M,x_alive_tmp,x_cell_tmp,x_sym_in_tmp,x_sym_out_tmp,D_cell,D_sym,W_in, W_out, x_mut)
-        
-        
-    return( df)
-
-################# Two symbiont types/ one host 
-
-def many_simulations(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym,W_in, W_out, x_mut, N_gen,N_sim,s_for_cells, h_for_cells, e_for_cells, p_large_h, s_for_symbionts, h_max, e_for_h_max, h_min, e_for_h_min):
-    
-
-    col_names = ['sim','generation', 'alive_cell', 'alive_sym_in', 'alive_sym_out',
-           'sym_in_type_I', 'sym_in_type_II', 'sym_in_dead',
-           'sym_out_type_I', 'sym_out_type_II', 'sym_out_dead',
-           'fitness_cell', 'fitness_sym_in_type_I', 'fitness_sym_out_type_I', 'fitness_type_I',
-           'fitness_sym_in_type_II', 'fitness_sym_out_type_II', 'fitness_type_II']
-    
-    df = pd.DataFrame(columns = col_names)
-
-    
-    for j in np.arange(N_sim):
-        df_tmp = model_symbionts(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym,W_in, W_out, x_mut, N_gen,s_for_cells, h_for_cells, e_for_cells, p_large_h, s_for_symbionts, h_max, e_for_h_max, h_min, e_for_h_min)
-        df_tmp['sim'] = N_gen*[j]
-        df = pd.concat([df,df_tmp])
-    
-    return(df)
-        
-
-################# Two symbiont types/ one host 
-
-def plotting(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym,W_in, W_out, x_mut, N_gen,N_sim,
-            s_for_cells, h_for_cells, e_for_cells, p_large_h, s_for_symbionts, h_max, e_for_h_max, h_min, e_for_h_min):
-
-    
-    
-    df = many_simulations(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym,W_in, W_out, x_mut, N_gen,N_sim,s_for_cells, h_for_cells, e_for_cells, p_large_h, s_for_symbionts, h_max, e_for_h_max, h_min, e_for_h_min)
-    
-    print('')
-    print('N = ', N, ', c = ',c,', M = ',M, ', D_cell = ',D_cell, ', D_sym = ', D_sym,', W_in = ', W_in,', W_out = ',W_out)
-    print('')
-    print('Number of generations = ', N_gen)
-    print('')
-    print('Traits for all cells: s = ',s_for_cells,', h = ',h_for_cells,', e = ',e_for_cells)
-    print('')
-    print('Proportion of type I symbionts = ',p_large_h)
-    print('')
-    print('Type I symbions: h = ', h_max,', e = ', e_for_h_max, ', s = ',s_for_symbionts)
-    print('')
-    print('Type II symbions: h = ', h_min,', e = ', e_for_h_min, ', s = ',s_for_symbionts)
-    print('')
-    
-
-
-    df.pivot(columns = 'sim')['alive_cell'].plot()
-    plt.xlabel('Generation')
-    plt.ylabel('Number of cells')
-    plt.savefig('Figures/alive_cells_h_max_'+str(h_max)+'_h_min_'+str(h_min)+'_e_for_h_max_'+str(e_for_h_max)+'_e_for_h_min_'+str(e_for_h_min)+'.png')
-    plt.show()
-
-    df.pivot(columns = 'sim')[['sym_in_type_I','sym_out_type_I']].plot()
-    plt.xlabel('Generation')
-    plt.ylabel('Number of type I symbionts')
-    plt.savefig('Figures/alive_sym_by_type_I_h_max_'+str(h_max)+'_h_min_'+str(h_min)+'_e_for_h_max_'+str(e_for_h_max)+'_e_for_h_min_'+str(e_for_h_min)+'.png')
-    plt.show()
-
-    df.pivot(columns = 'sim')[['sym_in_type_II','sym_out_type_II']].plot()
-    plt.xlabel('Generation')
-    plt.ylabel('Number of type 2 symbionts')
-    plt.savefig('Figures/alive_sym_by_type_II_h_max_'+str(h_max)+'_h_min_'+str(h_min)+'_e_for_h_max_'+str(e_for_h_max)+'_e_for_h_min_'+str(e_for_h_min)+'.png')
-    plt.show()
-
-    df.pivot(columns = 'sim')['fitness_cell'].plot()
-    plt.xlabel('Generation')
-    plt.ylabel('Mean cell fitness')
-    plt.savefig('Figures/fitness_cells_h_max_'+str(h_max)+'_h_min_'+str(h_min)+'_e_for_h_max_'+str(e_for_h_max)+'_e_for_h_min_'+str(e_for_h_min)+'.png')
-    plt.show()
-    return(df)
-
-
-################# Two host types / one symbion type
-
-def model_symbionts_two_hosts(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym,W_in, W_out, x_mut, N_gen,s_for_symbionts, h_for_symbionts, e_for_symbionts,s_for_cells, p_large_h,  h_max, e_for_h_max, h_min, e_for_h_min):
-    
-    x_alive_tmp = copy.deepcopy(x_alive)
-    x_cell_tmp =  copy.deepcopy(x_cell)
-    x_sym_in_tmp = copy.deepcopy(x_sym_in)
-    x_sym_out_tmp = copy.deepcopy(x_sym_out)
-    
-    col_names = ['generation', 'alive_cell', 'alive_sym_in', 'alive_sym_out',
-                    'cell_type_I', 'cell_type_II', 'cell_dead',
-                    'fitness_sym_in', 'fitness_sym_out', 'fitness_cell_type_I',                    
-                    'fitness_cell_type_II']
-    
-    df = pd.DataFrame(columns = col_names)
-
-    for i in np.arange(N_gen):
-        
-        generation = i
-
-        alive_cell = len(np.where(x_alive_tmp['cell']==1)[0])
-        alive_sym_in = len(np.where(x_alive_tmp['sym_in']==1)[0])
-        alive_sym_out = len(np.where(x_alive_tmp['sym_out']==1)[0])
-
-        cell_type_I = len(np.where(np.logical_and(x_cell_tmp['h']==h_max, x_cell_tmp['e']==e_for_h_max))[0])
-        cell_type_II = len(np.where(np.logical_and(x_cell_tmp['h']==h_min, x_cell_tmp['e']==e_for_h_min))[0])
-        cell_dead = len(np.where(x_cell_tmp['h']==0)[0])
-        
-        
-        fit = fitness(N,c,M,x_alive_tmp,x_cell_tmp,x_sym_in_tmp,x_sym_out_tmp)
-        
-        
-        fitness_sym_in = mean_or_zero(fit['sym_in'])
-        fitness_sym_out = mean_or_zero(fit['sym_out'])
-
-        fitness_cell_type_I =  mean_or_zero(fit['cell'][np.where(np.logical_and(x_cell_tmp['h']==h_max, x_cell_tmp['e']==e_for_h_max))])
-        fitness_cell_type_II = mean_or_zero(fit['cell'][np.where(np.logical_and(x_cell_tmp['h']==h_min, x_cell_tmp['e']==e_for_h_min))])
-
-
-        data_tmp = [generation, alive_cell, alive_sym_in, alive_sym_out,
-                    cell_type_I, cell_type_II, cell_dead,
-                    fitness_sym_in, fitness_sym_out, fitness_cell_type_I,                    
-                    fitness_cell_type_II]
-        
-        df.loc[i] = data_tmp
-        
-        
-        #np.random.seed(123 + 100*i)
-        x_alive_tmp,x_cell_tmp,x_sym_in_tmp,x_sym_out_tmp =one_generation(N,c,M,x_alive_tmp,x_cell_tmp,x_sym_in_tmp,x_sym_out_tmp,D_cell,D_sym,W_in, W_out, x_mut)
-        
-        
-    return( df)
-
-################# Two host types / one symbion type
-
-def many_simulations_two_hosts(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym,W_in, W_out, x_mut, N_gen,N_sim,s_for_symbionts, h_for_symbionts, e_for_symbionts,s_for_cells, p_large_h,  h_max, e_for_h_max, h_min, e_for_h_min):
-    
-    col_names = ['generation', 'alive_cell', 'alive_sym_in', 'alive_sym_out',
-                    'cell_type_I', 'cell_type_II', 'cell_dead',
-                    'fitness_sym_in', 'fitness_sym_out', 'fitness_cell_type_I',                    
-                    'fitness_cell_type_II']
-    
-    df = pd.DataFrame(columns = col_names)
-
-    
-    for j in np.arange(N_sim):
-        df_tmp = model_symbionts_two_hosts(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym,W_in, W_out, x_mut, N_gen,s_for_symbionts, h_for_symbionts, e_for_symbionts, s_for_cells, p_large_h,  h_max, e_for_h_max, h_min, e_for_h_min)
-        df_tmp['sim'] = N_gen*[j]
-        df = pd.concat([df,df_tmp])
-    
-    return(df)
-
-################# Two host types / one symbion type
-
-def plotting_two_hosts(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym,W_in, W_out, x_mut, N_gen,N_sim, s_for_symbionts, h_for_symbionts, e_for_symbionts, s_for_cells, p_large_h,  h_max, e_for_h_max, h_min, e_for_h_min):
-
-    
-    
-    df = many_simulations_two_hosts(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym,W_in, W_out, x_mut, N_gen,N_sim,s_for_symbionts, h_for_symbionts, e_for_symbionts,s_for_cells, p_large_h,  h_max, e_for_h_max, h_min, e_for_h_min)
-    
-    print('')
-    print('N = ', N, ', c = ',c,', M = ',M, ', D_cell = ',D_cell, ', D_sym = ', D_sym,', W_in = ', W_in,', W_out = ',W_out)
-    print('')
-    print('Number of generations = ', N_gen)
-    print('')
-    print('Traits for all symbionts: s = ',s_for_symbionts,', h = ',h_for_symbionts,', e = ',e_for_symbionts)
-    print('')
-    print('Proportion of type I host = ',p_large_h)
-    print('')
-    print('Type I host: h = ', h_max,', e = ', e_for_h_max, ', s = ',s_for_symbionts)
-    print('')
-    print('Type II host: h = ', h_min,', e = ', e_for_h_min, ', s = ',s_for_symbionts)
-    print('')
-    
-
-
-    df.pivot(columns = 'sim')[['cell_type_I']].plot()
-    plt.xlabel('Generation')
-    plt.ylabel('Number of type I hosts')
-    plt.savefig('Figures/alive_host_type_I_h_max_'+str(h_max)+'_h_min_'+str(h_min)+'_e_for_h_max_'+str(e_for_h_max)+'_e_for_h_min_'+str(e_for_h_min)+'.png')
-    plt.show()
-    
-    df.pivot(columns = 'sim')[['cell_type_II']].plot()
-    plt.xlabel('Generation')
-    plt.ylabel('Number of type II hosts')
-    plt.savefig('Figures/alive_host_type_II_h_max_'+str(h_max)+'_h_min_'+str(h_min)+'_e_for_h_max_'+str(e_for_h_max)+'_e_for_h_min_'+str(e_for_h_min)+'.png')
-    plt.show()
-
-    df.pivot(columns = 'sim')[['alive_sym_in']].plot()
-    plt.xlabel('Generation')
-    plt.ylabel('Number of symbionts inside hosts')
-    plt.savefig('Figures/alive_sym_in_h_max_'+str(h_max)+'_h_min_'+str(h_min)+'_e_for_h_max_'+str(e_for_h_max)+'_e_for_h_min_'+str(e_for_h_min)+'.png')
-    plt.show()
-    
-    df.pivot(columns = 'sim')[['alive_sym_out']].plot()
-    plt.xlabel('Generation')
-    plt.ylabel('Number of symbionts outside hosts')
-    plt.savefig('Figures/alive_sym_out_h_max_'+str(h_max)+'_h_min_'+str(h_min)+'_e_for_h_max_'+str(e_for_h_max)+'_e_for_h_min_'+str(e_for_h_min)+'.png')
-    plt.show()
-
-    df.pivot(columns = 'sim')[['fitness_cell_type_I', 'fitness_cell_type_II']].plot()
-    plt.xlabel('Generation')
-    plt.ylabel('Mean cell fitness')
-    plt.savefig('Figures/fitness_cells_h_max_'+str(h_max)+'_h_min_'+str(h_min)+'_e_for_h_max_'+str(e_for_h_max)+'_e_for_h_min_'+str(e_for_h_min)+'.png')
-    plt.show()
-    return(df)
-
 #################
 
-def model_symbionts_with_mutation(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym,W_in, W_out, x_mut, N_gen,N_sim,s_for_symbionts, h_for_symbionts, e_for_symbionts,s_for_cells, h_for_cells, e_for_cells):
+def model_symbionts_with_mutation(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym,W_in, W_out, x_mut, N_gen):
     
     x_alive_tmp = copy.deepcopy(x_alive)
     x_cell_tmp =  copy.deepcopy(x_cell)
@@ -729,7 +468,9 @@ def model_symbionts_with_mutation(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell
            'sym_in_dead',
            'sym_out_dead',
            'fitness_cell', 'fitness_sym_in', 'fitness_sym_out',
-                's_cell', 'h_cell', 'e_cell']
+                's_cell', 'h_cell', 'e_cell',
+                's_sym_in', 'h_sym_in', 'e_sym_in',
+                'theta_cell', 'theta_sym','scenario']
     
     df = pd.DataFrame(columns = col_names)
 
@@ -739,6 +480,7 @@ def model_symbionts_with_mutation(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell
 
         alive_cell = len(np.where(x_alive_tmp['cell']==1)[0])
         alive_sym_in = len(np.where(x_alive_tmp['sym_in']==1)[0])
+        #print('alive sym',alive_sym_in)
         alive_sym_out = len(np.where(x_alive_tmp['sym_out']==1)[0])
 
         sym_in_dead = len(np.where(x_sym_in_tmp['h']==0)[0])
@@ -753,123 +495,84 @@ def model_symbionts_with_mutation(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell
         
         fitness_sym_out = mean_or_zero(fit['sym_out'][np.where(x_alive_tmp['sym_out']==1)])
         
-        s_cell = np.mean(x_cell_tmp['s'][np.where(x_alive_tmp['cell']==1)])
-        h_cell = np.mean(x_cell_tmp['h'][np.where(x_alive_tmp['cell']==1)])
-        e_cell = np.mean(x_cell_tmp['e'][np.where(x_alive_tmp['cell']==1)])
+        s_sym_in = mean_or_zero(x_sym_in_tmp['s'][np.where(x_alive_tmp['sym_in']==1)])
+        h_sym_in = mean_or_zero(x_sym_in_tmp['h'][np.where(x_alive_tmp['sym_in']==1)])
+        e_sym_in = mean_or_zero(x_sym_in_tmp['e'][np.where(x_alive_tmp['sym_in']==1)])
+
+        s_cell = mean_or_zero(x_cell_tmp['s'][np.where(x_alive_tmp['cell']==1)])
+        h_cell = mean_or_zero(x_cell_tmp['h'][np.where(x_alive_tmp['cell']==1)])
+        e_cell = mean_or_zero(x_cell_tmp['e'][np.where(x_alive_tmp['cell']==1)])
+
+        theta_cell = e_sym_in + h_cell
+        theta_sym = e_cell + h_sym_in
+
+        if theta_cell >= 0 and theta_sym >= 0:
+            scenario = "Mutualism"   
+        if theta_cell > 0 and theta_sym < 0:
+            scenario = "Predator-prey"    
+        if theta_cell < 0 and theta_sym > 0:
+            scenario = "Parasitism" 
+        if theta_cell < 0 and theta_sym < 0:
+            scenario = "Competition"       
+
 
         data_tmp = [generation, alive_cell, alive_sym_in, alive_sym_out,
                     sym_in_dead,
                     sym_out_dead,
-                   fitness_cell, fitness_sym_in, fitness_sym_out,
-                   s_cell, h_cell, e_cell]
+                    fitness_cell, fitness_sym_in, fitness_sym_out,
+                    s_cell, h_cell, e_cell,
+                    s_sym_in, h_sym_in, e_sym_in,
+                    theta_cell, theta_sym, scenario]
         
         df.loc[i] = data_tmp
         
-        #print('')
-        #print('Generation number ', i)
-        #print('')
-        
+        #if i%100 ==0: 
+            #print('')
+            #print('Generation number ', i)
+            #print('')
+            
         
         #np.random.seed(123 + 100*i)
         x_alive_tmp,x_cell_tmp,x_sym_in_tmp,x_sym_out_tmp =one_generation(N,c,M,x_alive_tmp,x_cell_tmp,x_sym_in_tmp,x_sym_out_tmp,D_cell,D_sym,W_in, W_out, x_mut)
         
-        
+    df['scenario_start'] = df['scenario'].iloc[0]
+    df['scenario_end'] = df['scenario'].iloc[-1] 
+    df['epsilon_cell'] = x_mut['epsilon_cell']
+    df['epsilon_sym'] = x_mut['epsilon_sym_in']  
     return( df)
 
 #################
 
 
-def many_simulations_with_mutations(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym,W_in, W_out, x_mut, N_gen,N_sim,s_for_symbionts, h_for_symbionts, e_for_symbionts,s_for_cells, h_for_cells, e_for_cells):
+def many_simulations_with_mutations(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym,W_in, W_out, x_mut, N_gen,N_sim):
     
     col_names = ['generation', 'alive_cell', 'alive_sym_in', 'alive_sym_out',
            'sym_in_dead',
            'sym_out_dead',
            'fitness_cell', 'fitness_sym_in', 'fitness_sym_out',
-            's_cell', 'h_cell', 'e_cell']
+            's_cell', 'h_cell', 'e_cell',
+            's_sym_in', 'h_sym_in', 'e_sym_in',
+                'theta_cell', 'theta_sym', 'scenario',
+                'scenario_start','scenario_end',
+                'epsilon_cell', 'epsilon_sym',
+                'e_cell_0', 'e_sym_0']
     
     df = pd.DataFrame(columns = col_names)
 
     
     for j in np.arange(N_sim):
-        df_tmp = model_symbionts_with_mutation(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym,W_in, W_out, x_mut, N_gen,N_sim,s_for_symbionts, h_for_symbionts, e_for_symbionts,s_for_cells, h_for_cells, e_for_cells)
+        print('')
+        print('######################')
+        print('Simulation number = ',j)
+        print('######################')
+        print('')
+        df_tmp = model_symbionts_with_mutation(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym,W_in, W_out, x_mut, N_gen)
         df_tmp['sim'] = N_gen*[j]
+        df_tmp['e_cell_0'] =  np.round(df_tmp['e_cell'].iloc[0],2)
+        df_tmp['e_sym_0'] = np.round(df_tmp['e_sym_in'].iloc[0],2)
         df = pd.concat([df,df_tmp])
     
     return(df)
         
-
-
-#################
-
-def plotting_with_mutations(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym,W_in, W_out, x_mut, N_gen,N_sim,s_for_symbionts, h_for_symbionts, e_for_symbionts,s_for_cells, h_for_cells, e_for_cells):
-
-    
-    
-    df = many_simulations_with_mutations(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym,W_in, W_out, x_mut, N_gen,N_sim,s_for_symbionts, h_for_symbionts, e_for_symbionts,s_for_cells, h_for_cells, e_for_cells)
-    
-    print('')
-    print('N = ', N, ', c = ',c,', M = ',M, ', D_cell = ',D_cell, ', D_sym = ', D_sym,', W_in = ', W_in,', W_out = ',W_out)
-    print('')
-    print('Number of generations = ', N_gen)
-    print('')
-    print('Traits for all cells: s = ',s_for_cells,', h = ',h_for_cells,', e = ',e_for_cells)
-    #print('')
-    #print('Proportion of type I symbionts = ',p_large_h)
-    print('')
-    print('Traits for symbions: h = ', h_for_symbionts,', e = ', e_for_symbionts, ', s = ',s_for_symbionts)
-    print('')
-    
-    
-
-
-    df.pivot(columns = 'sim')['alive_cell'].plot()
-    plt.xlabel('Generation')
-    plt.ylabel('Number of cells')
-    plt.savefig('Figures/alive_cells.png')
-    plt.show()
-
-    df.pivot(columns = 'sim')[['alive_sym_in','alive_sym_out']].plot()
-    plt.xlabel('Generation')
-    plt.ylabel('Number of symbionts')
-    plt.savefig('Figures/alive_sym.png')
-    plt.show()
-
-
-    df.pivot(columns = 'sim')['fitness_cell'].plot()
-    plt.xlabel('Generation')
-    plt.ylabel('Mean cell fitness')
-    plt.savefig('Figures/fitness_cells.png')
-    plt.show()
-
-
-    df.pivot(columns = 'sim')['s_cell'].plot()
-    plt.xlabel('Generation')
-    plt.ylabel('s host')
-    plt.savefig('Figures/s_cells.png')
-    plt.show()
-    
-    df.pivot(columns = 'sim')['h_cell'].plot()
-    plt.xlabel('Generation')
-    plt.ylabel('h host')
-    plt.savefig('Figures/h_cells.png')
-    plt.show()
-    
-    df.pivot(columns = 'sim')['e_cell'].plot()
-    plt.xlabel('Generation')
-    plt.ylabel('e_host')
-    plt.savefig('Figures/e_cells.png')
-    plt.show()
-    
-    
-    df.pivot(columns = 'sim')['fitness_sym_in'].plot()
-    plt.xlabel('Generation')
-    plt.ylabel('Mean fitness sym in')
-    plt.savefig('Figures/fitness_sym_in.png')
-    plt.show()
-    
-    df.pivot(columns = 'sim')['fitness_sym_out'].plot()
-    plt.xlabel('Generation')
-    plt.ylabel('Mean fitness sym out')
-    plt.savefig('Figures/fitness_sym_out.png')
-    plt.show()
-    return(df)
+def pairwise_combinations(vector1, vector2):
+    return np.array(list(itertools.product(vector1, vector2)))
