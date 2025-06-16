@@ -1,0 +1,253 @@
+% v01, EVB, 
+
+%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[a4paper]{article}
+\usepackage[normalem]{ulem}
+\usepackage{titlesec}
+\setcounter{secnumdepth}{4}
+\usepackage{comment}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage[a4paper,top=2.5cm,bottom=2.5cm,left=2cm,right=2cm,marginparwidth=1.75cm]{geometry}
+\usepackage{enumerate}
+\usepackage{wrapfig}
+\usepackage{enumerate}
+\usepackage{enumitem}
+\def\R{{\cal R}}
+\usepackage[dvipsnames]{xcolor}
+
+\newcounter{acounter}
+
+\newcommand{\EV}[1]{\textcolor{red}{$\langle${\slshape{\bfseries Ev:} #1}$\rangle$}}
+\newcommand{\evcolor}[1]{\textcolor{red}{#1}}
+\newcommand{\map}[1]{\textcolor{blue}{#1}}
+\newcommand{\joecolor}[1]{\textcolor{ForestGreen}{#1}}
+\newcommand{\estrike}[1]{\textcolor{red}{\sout{#1}}}
+
+
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\sign}{\operatorname{sign}}
+\newcommand{\Ker}{\operatorname{Ker}}
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\range}{\operatorname{Range}}
+%\newcommand{\dg}{\operatorname{dg}}
+\newcommand{\dg}{\operatorname{diag}}
+\newcommand{\T}{\operatorname{\,T}}
+\newcommand{\reals}{\mathbb{R}}
+\newcommand{\NA}{\operatorname{na}}
+\newcommand{\A}{\operatorname{a}}
+
+\usepackage[export]{adjustbox}
+\usepackage{subfig}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[colorlinks=true, allcolors=blue,hypertexnames=false]{hyperref}
+\usepackage{float}
+
+\newcommand{\SubItem}[1]{
+    {\setlength\itemindent{15pt} \item[-] #1}
+}
+
+\usepackage{amsmath,amsfonts,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{commath}
+\let\oldnorm\norm  
+\let\norm\undefined 
+\DeclarePairedDelimiter\norm{\lVert}{\rVert}
+
+
+
+\title{Coevolution of a host-symbiont system}
+\author{Adrian Casanova, Michael Lynch, Esteban Vargas}
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+\newtheorem{proposition}{Proposition}
+\newtheorem*{proposition*}{Proposition}
+
+\newcommand{\joe}[1]{\textcolor{ForestGreen}{$\langle${\slshape{\bfseries Joe:} #1}$\rangle$}}
+
+\newcommand{\green}{\textcolor{ForestGreen}}
+\newcommand{\blue}{\textcolor{blue}}
+\newcommand{\purple}{\textcolor{purple}}
+
+\usepackage{algorithmic}            
+\usepackage{algorithm}
+
+\titleformat{\paragraph}
+{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+\newcounter{savealgorithm}
+\newenvironment{subalgorithms}
+ {%
+  \stepcounter{algorithm}%
+  \edef\currentthealgorithm{\thealgorithm}%
+  \setcounter{savealgorithm}{\value{algorithm}}%
+  \setcounter{algorithm}{0}%
+  \renewcommand{\thealgorithm}{\currentthealgorithm\alph{algorithm}}%
+ }
+ {%
+  \setcounter{algorithm}{\value{savealgorithm}}%
+ }
+\begin{document}
+\maketitle
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{abstract}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\end{abstract}
+
+%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}\label{sec:intro}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Methods: the model}\label{sec:methods}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+ 
+ We summarize our notation in Table \ref{table:notation}. 
+ 
+ 
+\begin{table}[H]
+\begin{centering}
+\begin{tabular}{lll}
+{\bf Symbol} & {\bf Expression} & {\bf Description}  \\ \hline \hline
+$N$ & & Carrying capacity of host  \\ \hline
+$c$ & & Carrying capacity of symbiont \\ \hline \hline
+\end{tabular}
+\end{centering}
+\caption{Summary of our notation.}
+\label{table:notation}
+\end{table}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Results}\label{sec:results}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Transitions across four scenarios of symbiosis}\label{sec:four_scenarios}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{itemize}
+    \item In the following simulations we...
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+    \centering
+    \subfloat[][Evolution of trajectories]{\includegraphics[scale=0.6]{../Figures/theta_trajectories_epsilon_host_0.001_epsilon_sym_0.001.png}}\\
+    \subfloat[][Final scenario distributions]{\includegraphics[scale=0.42]{../Figures/final_scenario_epsilon_cell_0.001_epislon_sym_0.001.pdf}}
+    \subfloat[][Spent time in each scenario]{\includegraphics[scale=0.42]{../Figures/distribution_duration_each_scenario_epsilon_cell_0.001_epislon_sym_0.001.pdf}}
+    \caption{Coevolution of the parameters $\theta_{\text{host}}$, $\theta_{\text{sym}}$ where $\epsilon_{\text{host}} = 0.001$ and $\epsilon_{\text{sym}} = 0.001$. }
+    \label{fig:absorption_graph}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{figure}[H]
+    \centering
+    \subfloat[][Evolution of trajectories]{\includegraphics[scale=0.6]{../Figures/theta_trajectories_epsilon_host_0.001_epsilon_sym_1e-05.png}}\\
+    \subfloat[][Final scenario distributions]{\includegraphics[scale=0.42]{../Figures/final_scenario_epsilon_cell_0.001_epislon_sym_1e-05.pdf}}
+    \subfloat[][Spent time in each scenario]{\includegraphics[scale=0.42]{../Figures/distribution_duration_each_scenario_epsilon_cell_0.001_epislon_sym_1e-05.pdf}}
+    \caption{Coevolution of the parameters $\theta_{\text{host}}$, $\theta_{\text{sym}}$ where $\epsilon_{\text{host}} = 0.001$ and $\epsilon_{\text{sym}} = 0.00001$. }
+    \label{fig:absorption_graph}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{figure}[H]
+    \centering
+    \subfloat[][Evolution of trajectories]{\includegraphics[scale=0.6]{../Figures/theta_trajectories_epsilon_host_1e-05_epsilon_sym_0.001.png}}\\
+    \subfloat[][Final scenario distributions]{\includegraphics[scale=0.42]{../Figures/final_scenario_epsilon_cell_1e-05_epislon_sym_0.001.pdf}}
+    \subfloat[][Spent time in each scenario]{\includegraphics[scale=0.42]{../Figures/distribution_duration_each_scenario_epsilon_cell_1e-05_epislon_sym_0.001.pdf}}
+    \caption{Coevolution of the parameters $\theta_{\text{host}}$, $\theta_{\text{sym}}$ where $\epsilon_{\text{host}} = 0.00001$ and $\epsilon_{\text{sym}} = 0.001$. }
+    \label{fig:absorption_graph}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{figure}[H]
+    \centering
+    \subfloat[][Evolution of trajectories]{\includegraphics[scale=0.6]{../Figures/theta_trajectories_epsilon_host_1e-05_epsilon_sym_1e-05.png}}\\
+    \subfloat[][Final scenario distributions]{\includegraphics[scale=0.42]{../Figures/final_scenario_epsilon_cell_1e-05_epislon_sym_1e-05.pdf}}
+    \subfloat[][Spent time in each scenario]{\includegraphics[scale=0.42]{../Figures/distribution_duration_each_scenario_epsilon_cell_1e-05_epislon_sym_1e-05.pdf}}
+    \caption{Coevolution of the parameters $\theta_{\text{host}}$, $\theta_{\text{sym}}$ where $\epsilon_{\text{host}} = 0.00001$ and $\epsilon_{\text{sym}} = 0.00001$. }
+    \label{fig:absorption_graph}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%
+
+
+ 
+ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Competition in a simple mutatation regime}\label{sec:subResult}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conclusions and Discussion}\label{sec:discussion}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%
+
+\appendix
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Appendix}\label{appendix}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{algorithm}
+\caption{Symbiosis model}
+\label{alg:model}
+\begin{algorithmic}[1]
+ \renewcommand{\algorithmicrequire}{Input:}
+ \renewcommand{\algorithmicensure}{Output:}
+ \REQUIRE Inputs. \medskip
+ \ENSURE Outputs.
+\medskip \medskip
+	\STATE Step 1
+	\STATE Spep 2
+	\STATE Step 3
+\end{algorithmic}
+\end{algorithm}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{Data and code availability}
+
+%We have posted t
+The code that yields the numerical results in Figures \ref{fig:} and \ref{fig:} of Section \ref{sec:} are available at \url{}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Acknowledgements}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%This work was supported by 
+We thank ....
+%%%%%%%
+
+\bibliography{biblio}
+\bibliographystyle{plain}
+
+
+\end{document}
+
+
+
