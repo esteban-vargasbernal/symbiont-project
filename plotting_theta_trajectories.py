@@ -48,7 +48,7 @@ for epsilon_cell in [epsilon_cell_large, epsilon_cell_small]:
     
     for epsilon_sym in [epsilon_sym_large, epsilon_sym_small]:
 
-        for e_sym in e_for_symbionts_ls:
+        for e_sym in e_for_symbionts_ls: 
 
                 for e_cell in e_for_cells_ls:
                     

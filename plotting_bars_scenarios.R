@@ -2,7 +2,7 @@
 
 library(arrangements)
 library(matrixcalc)
-library(ggplot2)
+library(ggplot2) 
 library(parallel)
 ncores <- detectCores() - 1
 RNGkind("L'Ecuyer-CMRG")
