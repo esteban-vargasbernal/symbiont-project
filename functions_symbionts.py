@@ -574,5 +574,184 @@ def many_simulations_with_mutations(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_ce
     
     return(df)
         
+
 def pairwise_combinations(vector1, vector2):
     return np.array(list(itertools.product(vector1, vector2)))
+
+
+
+###################################################
+
+def get_scenario(theta_cell, theta_sym):
+    if theta_cell >= 0 and theta_sym >= 0:
+        scenario = "Mutualism"   
+    if theta_cell > 0 and theta_sym < 0:
+        scenario = "Predator-prey"    
+    if theta_cell < 0 and theta_sym > 0:
+        scenario = "Parasitism" 
+    if theta_cell < 0 and theta_sym < 0:
+        scenario = "Competition"    
+    return(scenario)
+
+
+###################################################
+def get_angle(delta_theta_cell, delta_theta_sym):
+    scenario = get_scenario(delta_theta_cell, delta_theta_sym)
+    alpha = np.arctan( delta_theta_sym/delta_theta_cell)
+    #print(alpha, scenario)
+    if scenario == "Mutualism":
+        angle = alpha
+    if scenario == "Parasitism" or scenario == "Competition":
+        angle = alpha + np.pi
+    if scenario == "Predator-prey":
+        angle = 2*np.pi+alpha
+    return(angle)
+
+###################################################
+
+def get_distance(delta_theta_cell, delta_theta_sym):
+    d = np.sqrt(delta_theta_cell**2 + delta_theta_sym**2)
+    return(d)
+
+###################################################
+
+def model_symbionts_within_circle(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym,W_in, W_out, x_mut, N_gen_max, R):
+    
+    x_alive_tmp = copy.deepcopy(x_alive)
+    x_cell_tmp =  copy.deepcopy(x_cell)
+    x_sym_in_tmp = copy.deepcopy(x_sym_in)
+    x_sym_out_tmp = copy.deepcopy(x_sym_out)
+
+    h_sym_in = mean_or_zero(x_sym_in_tmp['h'][np.where(x_alive_tmp['sym_in']==1)])
+    e_sym_in = mean_or_zero(x_sym_in_tmp['e'][np.where(x_alive_tmp['sym_in']==1)])
+
+    h_cell = mean_or_zero(x_cell_tmp['h'][np.where(x_alive_tmp['cell']==1)])
+    e_cell = mean_or_zero(x_cell_tmp['e'][np.where(x_alive_tmp['cell']==1)])
+
+    theta_cell_0 = e_sym_in + h_cell
+    theta_sym_0 = e_cell + h_sym_in
+    
+    col_names = ['generation', 'alive_cell', 'alive_sym_in', 'alive_sym_out',
+           'fitness_cell', 'fitness_sym_in', 'fitness_sym_out',
+                's_cell', 'h_cell', 'e_cell',
+                's_sym_in', 'h_sym_in', 'e_sym_in',
+                'theta_cell', 'theta_sym','scenario']
+    
+    df = pd.DataFrame(columns = col_names)
+
+    i = 0
+    d = 0
+    while i < N_gen_max and d < R:
+
+        print('i = ', i, ', d = ',d)
+        generation = i
+
+        alive_cell = len(np.where(x_alive_tmp['cell']==1)[0])
+        alive_sym_in = len(np.where(x_alive_tmp['sym_in']==1)[0])
+        #print('alive sym',alive_sym_in)
+        alive_sym_out = len(np.where(x_alive_tmp['sym_out']==1)[0])
+
+        sym_in_dead = len(np.where(x_sym_in_tmp['h']==0)[0])
+
+        sym_out_dead = len(np.where(x_sym_out_tmp['h']==0)[0])
+
+        fit = fitness(N,c,M,x_alive_tmp,x_cell_tmp,x_sym_in_tmp,x_sym_out_tmp)
+
+        fitness_cell = mean_or_zero(fit['cell'][np.where(x_alive_tmp['cell']==1)])
+
+        fitness_sym_in =  mean_or_zero(fit['sym_in'][np.where(x_alive_tmp['sym_in']==1)])
+        
+        fitness_sym_out = mean_or_zero(fit['sym_out'][np.where(x_alive_tmp['sym_out']==1)])
+        
+        s_sym_in = mean_or_zero(x_sym_in_tmp['s'][np.where(x_alive_tmp['sym_in']==1)])
+        h_sym_in = mean_or_zero(x_sym_in_tmp['h'][np.where(x_alive_tmp['sym_in']==1)])
+        e_sym_in = mean_or_zero(x_sym_in_tmp['e'][np.where(x_alive_tmp['sym_in']==1)])
+
+        s_cell = mean_or_zero(x_cell_tmp['s'][np.where(x_alive_tmp['cell']==1)])
+        h_cell = mean_or_zero(x_cell_tmp['h'][np.where(x_alive_tmp['cell']==1)])
+        e_cell = mean_or_zero(x_cell_tmp['e'][np.where(x_alive_tmp['cell']==1)])
+
+        theta_cell = e_sym_in + h_cell
+        theta_sym = e_cell + h_sym_in
+
+        delta_theta_cell = theta_cell - theta_cell_0
+        delta_theta_sym = theta_sym - theta_sym_0
+
+        scenario = get_scenario(theta_cell, theta_sym)
+        
+        data_tmp = [generation, alive_cell, alive_sym_in, alive_sym_out,
+                    fitness_cell, fitness_sym_in, fitness_sym_out,
+                    s_cell, h_cell, e_cell,
+                    s_sym_in, h_sym_in, e_sym_in,
+                    theta_cell, theta_sym, scenario]
+        
+        df.loc[i] = data_tmp
+                
+        x_alive_tmp,x_cell_tmp,x_sym_in_tmp,x_sym_out_tmp =one_generation(N,c,M,x_alive_tmp,x_cell_tmp,x_sym_in_tmp,x_sym_out_tmp,D_cell,D_sym,W_in, W_out, x_mut)
+
+        d = get_distance(delta_theta_cell, delta_theta_sym)
+        
+        i = i+1
+      
+        
+    
+    angle = get_angle(delta_theta_cell, delta_theta_sym)
+
+    df['scenario_start'] = df['scenario'].iloc[0]
+    df['scenario_end'] = df['scenario'].iloc[-1] 
+    df['epsilon_cell'] = x_mut['epsilon_cell']
+    df['epsilon_sym'] = x_mut['epsilon_sym_in']  
+    return( dict(df =df, angle =  angle, generation = generation))
+
+#################
+
+
+def many_simulations_within_circle(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym,W_in, W_out, x_mut, N_gen_max, R, N_sim):
+    
+    x_alive_tmp = copy.deepcopy(x_alive)
+    x_cell_tmp =  copy.deepcopy(x_cell)
+    x_sym_in_tmp = copy.deepcopy(x_sym_in)
+    x_sym_out_tmp = copy.deepcopy(x_sym_out)
+
+    h_sym_in = mean_or_zero(x_sym_in_tmp['h'][np.where(x_alive_tmp['sym_in']==1)])
+    e_sym_in = mean_or_zero(x_sym_in_tmp['e'][np.where(x_alive_tmp['sym_in']==1)])
+
+    h_cell = mean_or_zero(x_cell_tmp['h'][np.where(x_alive_tmp['cell']==1)])
+    e_cell = mean_or_zero(x_cell_tmp['e'][np.where(x_alive_tmp['cell']==1)])
+
+    theta_cell_0 = e_sym_in + h_cell
+    theta_sym_0 = e_cell + h_sym_in
+
+    col_names = ['generation', 'alive_cell', 'alive_sym_in', 'alive_sym_out',
+           'fitness_cell', 'fitness_sym_in', 'fitness_sym_out',
+            's_cell', 'h_cell', 'e_cell',
+            's_sym_in', 'h_sym_in', 'e_sym_in',
+                'theta_cell', 'theta_sym', 'scenario',
+                'scenario_start','scenario_end',
+                'epsilon_cell', 'epsilon_sym',
+                'theta_cell_0', 'theta_sym_0', 'sim']
+    
+    df = pd.DataFrame(columns = col_names)
+
+    df_angle = pd.DataFrame(columns = ['sim', 'theta_cell', 'theta_sym', 'angle', 'generation'])
+    
+    for j in np.arange(N_sim):
+        print('')
+        print('######################')
+        print('Simulation number = ',j)
+        print('######################')
+        print('')
+        one_sim = model_symbionts_within_circle(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym,W_in, W_out, x_mut, N_gen_max, R)
+        df_tmp = one_sim['df']
+        df_tmp['theta_cell_0'] =  np.round(df_tmp['theta_cell'].iloc[0],2)
+        df_tmp['theta_sym_0'] = np.round(df_tmp['theta_sym'].iloc[0],2)
+        df_tmp['sim'] = j
+        df = pd.concat([df,df_tmp])
+
+        angle = one_sim['angle']
+        generation = one_sim['generation']
+        
+        df_angle.loc[j] = [j, theta_cell_0, theta_sym_0, angle, generation]
+    #print(df_angle.shape)
+    return(dict(df = df, df_angle = df_angle))
+    
