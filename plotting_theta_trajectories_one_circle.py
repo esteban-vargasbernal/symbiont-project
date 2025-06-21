@@ -22,12 +22,16 @@ from collections import Counter
 
 #df_angle = pd.read_csv('Data/df_angle_within_circle_only_competition.csv')
 
-df_all = pd.read_csv('Data/df_all_within_circle.csv')
+#df_all = pd.read_csv('Data/df_all_within_circle.csv')
+#df_angle = pd.read_csv('Data/df_angle_within_circle.csv')
 
+df_all_1 = pd.read_csv('Data/df_all_I.csv')
+df_all_3 = pd.read_csv('Data/df_all_III.csv')
+df_all = pd.concat([df_all_1,df_all_3])
 
-df_angle = pd.read_csv('Data/df_angle_within_circle.csv')
-
-
+df_angle_1 = pd.read_csv('Data/df_angle_I.csv')
+df_angle_2 = pd.read_csv('Data/df_angle_III.csv')
+df_angle = pd.concat([df_angle_1,df_angle_2])
 
 
 scenarios = ['Mutualism', 'Predator-prey', 'Parasitism', 'Competition']
@@ -37,7 +41,7 @@ colors = {'Mutualism':"red",'Predator-prey':"blue", 'Parasitism':"green", 'Compe
 epsilon_cell = 0.001
 epsilon_sym = 0.001 #u_sym*L
 
-N_sim = 5
+N_sim = 40
 n_split = 2
 N_gen_max = 500
 
@@ -53,9 +57,9 @@ e_cell = -0.75
 theta_cell_0 = e_sym + h_cell 
 theta_sym_0 = e_cell + h_sym 
 
-
+### change the thetas below
 theta_cell_0 = -0.5
-theta_sym_0 =  0.5
+theta_sym_0 =  -0.5
 
 R = 0.01
 circle = Circle((theta_cell_0, theta_sym_0), radius = R, color='blue', fill=False, linewidth=2)
@@ -121,11 +125,12 @@ range_angle = np.max(angles_v) - np.min(angles_v)
 #plt.ylim(-1,1.2)
 
 plt.grid()
+plt.locator_params(axis='x', nbins=5)
 plt.xlabel(r'$\theta_{\text{host}} = e_{\text{sym}} + h_{\text{host}}$', fontsize = 16)
 plt.ylabel(r'$\theta_{\text{sym}} = e_{\text{host}} + h_{\text{sym}}$', fontsize = 16)
 plt.arrow(theta_cell_0, theta_sym_0, R/(1+sd_xy)*mean_x, R/(1+sd_xy)*mean_y, width=0.0005)
 plt.title(r'$\epsilon_{\text{host}}$ = '+ str(epsilon_cell)+ r', $\epsilon_{\text{sym}} = $'+str(epsilon_sym), fontsize = 18)
-plt.legend(bbox_to_anchor=(1.01, 1), borderaxespad=0, title = 'Scenario of the \n initial condition')
+plt.legend(bbox_to_anchor=(1.25, 1), borderaxespad=0, title = 'Scenario of the \n initial condition')
 plt.tight_layout()
 plt.savefig('Figures/theta_trajectories_one_circlet_'+ scenario_start+'.png')
 plt.show()
