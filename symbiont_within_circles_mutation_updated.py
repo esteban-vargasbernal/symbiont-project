@@ -1,5 +1,4 @@
 import numpy as np
-import networkx as nx
 import matplotlib.pyplot as plt
 import math
 import copy
@@ -535,7 +534,7 @@ def model_symbionts_within_circle(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell
     d = 0
     while i < N_gen_max and d < R:
 
-        print('i = ', i, ', d = ',d)
+        #print('i = ', i, ', d = ',d)
         generation = i
 
         alive_cell = len(np.where(x_alive_tmp['cell']==1)[0])
@@ -759,13 +758,15 @@ if __name__ == "__main__":
 
     start_time = time.time()
 
-    num_processes = os.cpu_count()
-    if num_processes is None:
-        num_processes = 4 # Default to 4 if cpu_count() is not available
+    num_processes = 16
+    #num_processes = os.cpu_count()
+    #if num_processes is None:
+    #    num_processes = 4 # Default to 4 if cpu_count() is not available
     print(f"Using {num_processes} processes.")
 
     #n_args = 4
 
+    num_file = 'I'
     N_sim = 5
     
     n_split = 2
@@ -808,4 +809,6 @@ if __name__ == "__main__":
     #df.to_csv('/Users/estebanvargasbernal/Documents/github/symbiont-project/Data/df_N_'+ str(N) +'.csv', index=False)
     df.to_csv('/Users/estebanvargasbernal/Documents/github/symbiont-project/Data/df_all_within_circle.csv', index=False)
     df_angle.to_csv('/Users/estebanvargasbernal/Documents/github/symbiont-project/Data/df_angle_within_circle.csv', index=False)
-    print("total time = "+str(end_time - start_time))
+    #df.to_csv('/home/vargasbernal.1/Symbionts_on_demand_osu/Data/df_all_'+ num_file + '.csv', index=False)
+    #df_angle.to_csv('/home/vargasbernal.1/Symbionts_on_demand_osu/Data/df_angle_'+ num_file + '.csv', index=False)
+    print("total time = "+str((end_time - start_time)/60 ) + ' minutes')
