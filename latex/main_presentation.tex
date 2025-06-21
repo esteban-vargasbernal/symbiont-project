@@ -1,0 +1,184 @@
+\documentclass{beamer}
+%
+% Choose how your presentation looks.
+%
+% For more themes, color themes and font themes, see:
+% http://deic.uab.es/~iblanes/beamer_gallery/index_by_theme.html
+%
+\mode<presentation>
+{
+  \usetheme{default}      % or try Darmstadt, Madrid, Warsaw, ...
+  \usecolortheme{default} % or try albatross, beaver, crane, ...
+  \usefonttheme{default}  % or try serif, structurebold, ...
+  \setbeamertemplate{navigation symbols}{}
+  \setbeamertemplate{caption}[numbered]
+} 
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\T}{\operatorname{T}}
+\newcommand{\logit}{\operatorname{logit}}
+
+\usepackage{amsmath,amsfonts,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{commath}
+\let\oldnorm\norm\let\norm\undefined 
+\DeclarePairedDelimiter\norm{\lVert}{\rVert}
+
+
+\usepackage{esvect}
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage{float}
+\usepackage{subfig}
+\title{Transitions between mutualism, parasitism, predator-prey, and competition symbiosis scenarios}
+\author{Esteban Vargas in collaboration with Adrian Gonzalez and Michael Lynch}
+\institute{Arizona State University}
+\date{April 23, 2025}
+
+\begin{document}
+
+\frame{\titlepage}
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Main question: How do symbiotic transitions emerge?}
+
+
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Stochastic model, key parameters}
+
+
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Stochastic model, steps}
+
+
+
+
+\textbf{Free-living symbiont} $(g,0,j)$ has fitness:
+\[
+F(g,0,j) = s_{\text{sym}}(g,0,j)
+\]
+\textbf{Symbiont} $(g,i,j)$ (inside host $i \neq 0$) has fitness:
+\[
+F(g,i,j) = s_{\text{sym}}(g,i,j) + h_{\text{sym}}(g,i,j) + e_{\text{host}}(g,i)
+\]
+\textbf{host} $(g,i)$ has fitness:
+\[
+F(g,i) = s_{\text{host}}(g,i) + h_{\text{host}}(g,i) \cdot K_{g,i} + \sum_{j=1}^{K_{g,i}} e_{\text{sym}}(g,i,j)
+\]
+where $K_{g,i}$ is the number of alive symbionts hosted by host $(g,i)$.
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Parameters}
+
+    \begin{table}[H]
+\begin{centering}
+\begin{tabular}{lll}
+{\bf Symbol} & {\bf Description} & {\bf Values}  \\ \hline \hline
+  $N$ &  Number of hosts in each generation & 1000 \\ \hline 
+  $M$ &  Number of free-living symbionts & 1000 \\ \hline 
+  $c$ &  Maximum number of symbionts a single host can contain & 50 \\ \hline 
+  $\gamma_{\text{sym}}$ &  Mutation variability for one symbiont & 0.05 \\ \hline 
+  $\gamma_{\text{host}}$ &  Mutation variability for one host & 0.05 \\ \hline
+  $\mu_{\text{sym}}$ &  Mutation distribution for symbionts & $\text{Uniform}\left( -\gamma_{\text{sym}},\gamma_{\text{sym}} \right)$ \\ \hline
+  $\mu_{\text{host}}$ &  Mutation distribution for hosts & $\text{Uniform}\left( -\gamma_{\text{host}},\gamma_{\text{host}} \right)$ \\ \hline 
+  $\epsilon_{\text{sym}}$ &  Mutation probability for one symbiont per generation & 0.001 or 0.00001 \\ \hline 
+  $\epsilon_{\text{host}}$ &  Mutation probability for one host per generation & 0.001 or 0.00001 \\ \hline 
+  $W_{\text{out}}$ &  Number of swaps between free-living and non free-living symbionts per generation & 10 \\ \hline 
+  $W_{\text{in}}$ &  Number of swaps between symbionts in different hosts per generation & 10 \\ \hline 
+  $D_{\text{host}}$ &  Death probability of a host per generation & 0.2 \\ \hline 
+  $D_{\text{sym}}$ &  Death probability of a symbiont per generation  &  0.2 \\ \hline \hline
+\end{tabular}
+\end{centering}
+\caption{Summary of parameters.}
+\label{table:parameters}
+\end{table}
+     
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}{Parameters}
+
+\begin{table}[H]
+\begin{centering}
+\begin{tabular}{lll}
+{\bf Symbol} & {\bf Description} & {\bf Initial velues}  \\ \hline \hline
+$s_{\text{host}}(g,i)$ & Baseline selection of host $i$ & $c =50$ \\ \hline
+$h_{\text{host}}(g,i)$ & Effect of harvesting of host $i$ on host selection &  0.25 \\ \hline
+$e_{\text{host}}(g,i)$ & Effect of host $i$ on selection of symbionts &  -0.75, -0.42, - 0.08, 0.25  \\ \hline
+$s_{\text{sym}}(g,i,j)$ & Baseline selection of symbiont $j$ in host $i$ & 1 \\ \hline
+$h_{\text{sym}}(g,i,j)$ & Effect of harvesting of symbiont $j$ on symbiont selection & 0.25 \\ \hline
+$e_{\text{sym}}(g,i,j)$ & Effect of symbiont $j$ on selection of host $i$ &  -0.75, -0.42, - 0.08, 0.25 \\ \hline 
+$\theta_{\text{host}}$ & Mean of $h_{\text{host}}+e_{\text{sym}}$. Net symbiosis effect on host & -0.5, -0.17, - 0.17, 0.5 \\ \hline
+$\theta_{\text{sym}}$ & Mean of $h_{\text{sym}} + e_{\text{host}}$. Net symbiosis effect on symbionts & -0.5, -0.17, - 0.17, 0.5 \\ \hline\hline
+\end{tabular}
+\end{centering}
+\caption{Summary of traits in generation $g$.}
+\label{table:traits}
+\end{table}
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}{}
+
+\begin{figure}[H]
+    \centering
+    \subfloat[][]{\includegraphics[scale=0.3]{../Figures/theta_trajectories_one_circlet_Parasitism.png}}
+    \subfloat[][]{\includegraphics[scale=0.3]{../Figures/theta_trajectories_one_circlet_Mutualism.png}}\\
+    \subfloat[][]{\includegraphics[scale=0.3]{../Figures/theta_trajectories_one_circlet_Competition.png}}
+    \subfloat[][]{\includegraphics[scale=0.3]{../Figures/theta_trajectories_one_circlet_Predator-prey.png}}
+\end{figure}
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}{}
+
+\begin{figure}[H]
+    \centering
+    \subfloat[][]{\includegraphics[scale=0.3]{../Figures/all_arrows.png}}
+    \subfloat[][]{\includegraphics[scale=0.3]{../Figures/all_x_p_value.png}}\\
+    \subfloat[][]{\includegraphics[scale=0.3]{../Figures/all_y_p_value.png}}
+    \subfloat[][]{\includegraphics[scale=0.3]{../Figures/all_generations.png}}
+\end{figure}
+
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}{Some conlusions and future work}
+
+
+\end{frame}
+
+
+
+
+\end{document}
