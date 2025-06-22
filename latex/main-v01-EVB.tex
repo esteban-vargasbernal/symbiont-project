@@ -61,8 +61,8 @@
 
 
 
-\title{Coevolution of a host-symbiont system}
-\author{Adrian Casanova, Michael Lynch, Esteban Vargas}
+\title{Transitions between mutualism, parasitism, predator-prey, and competition in an endosymbiont-host system}
+\author{Essteban Vargas in collaboration with Michael Lynch and Adrian Gonzalez}
 \newtheorem{theorem}{Theorem}
 \newtheorem{definition}{Definition}
 \newtheorem{proposition}{Proposition}
@@ -121,8 +121,8 @@ Some points to make
     \item We introduce a stochastic models where we do not assume weak selection regimes or constant traits (e.g., effects of one species on the other). The traits in our models do evolve. In models like \cite{gavrilets1998coevolutionary}, the traits are constant. The presentation of this model would be Section 2 (Methods) of the manuscript.
     \item We are able to quantify the evolution on the level of cooperation (the $\theta$ values on our simulations). In \cite{ito2019joint} they also quantify cooperation. This could be a good paper to discuss.
     \item We use our model to examine how transitions between symbiotic scenarios (i.e., mutualism, parasitism, competition, predator-prey) occur. For example, we can evaluate the effect of disparities in mutation rates
-          between hosts and symbionts on the emergence of a distinct symbiotic scenario than the initial symbiotic scenario. We can present generic simulations in a first subsection of the results section (which would be Subsection 3.1 of the manuscript).
-    \item We can simplify the mutation mecanism to reproduce the four-state mutation framework in the paper of Mike \cite{lynch2023mutation}. We can then study the effect of differences in mutation rates. For example, we can examine scenarios when the evolution of one actor (i.e., host or symbiont) ``drives'' the evolution of the other. This is to be done.
+          between hosts and endosymbionts on the emergence of a distinct symbiotic scenario than the initial symbiotic scenario. We can present generic simulations in a first subsection of the results section (which would be Subsection 3.1 of the manuscript).
+    \item We can simplify the mutation mecanism to reproduce the four-state mutation framework in the paper of Mike \cite{lynch2023mutation}. We can then study the effect of differences in mutation rates. For example, we can examine scenarios when the evolution of one actor (i.e., host or endosymbiont) ``drives'' the evolution of the other. This is to be done.
          We could write the results of this part in a subsction of the results (e.g., Subsection 3.2)
 \end{itemize}
 
@@ -141,19 +141,21 @@ Some points to make
  
 \begin{table}[H]
 \begin{centering}
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{lll}
 {\bf Symbol} & {\bf Description} & {\bf Initial velues}  \\ \hline \hline
-$s_{\text{host}}(g,i)$ & Baseline selection of host $i$ & $c =50$ \\ \hline
-$h_{\text{host}}(g,i)$ & Effect of harvesting of host $i$ on host selection &  0.25 \\ \hline
-$e_{\text{host}}(g,i)$ & Effect of host $i$ on selection of symbionts &  -0.75, -0.42, - 0.08, 0.25  \\ \hline
-$s_{\text{sym}}(g,i,j)$ & Baseline selection of symbiont $j$ in host $i$ & 1 \\ \hline
-$h_{\text{sym}}(g,i,j)$ & Effect of harvesting of symbiont $j$ on symbiont selection & 0.25 \\ \hline
-$e_{\text{sym}}(g,i,j)$ & Effect of symbiont $j$ on selection of host $i$ &  -0.75, -0.42, - 0.08, 0.25 \\ \hline 
+$s_{\text{host}}(t,i)$ & Baseline selection of host $i$ & $c =50$ \\ \hline
+$h_{\text{host}}(t,i)$ & Effect of harvesting by invividual host $i$ on its selection &  0.25 \\ \hline
+$e_{\text{host}}(t,i)$ & Effect of individual host $i$ on selection of its endosymbionts &  -0.75, -0.42, - 0.08, 0.25  \\ \hline
+$s_{\text{sym}}(t,i,j)$ & Baseline selection of individual endosymbiont $j$ in its individual host $i$ & 1 \\ \hline
+$h_{\text{sym}}(t,i,j)$ & Effect of harvesting by individual endosymbiont $j$ on its selection & 0.25 \\ \hline
+$e_{\text{sym}}(t,i,j)$ & Effect of individual endosymbiont $j$ on selection of its host $i$ &  -0.75, -0.42, - 0.08, 0.25 \\ \hline 
 $\theta_{\text{host}}$ & Mean of $h_{\text{host}}+e_{\text{sym}}$. Net symbiosis effect on host & -0.5, -0.17, - 0.17, 0.5 \\ \hline
-$\theta_{\text{sym}}$ & Mean of $h_{\text{sym}} + e_{\text{host}}$. Net symbiosis effect on symbionts & -0.5, -0.17, - 0.17, 0.5 \\ \hline\hline
+$\theta_{\text{sym}}$ & Mean of $h_{\text{sym}} + e_{\text{host}}$. Net symbiosis effect on endosymbionts & -0.5, -0.17, - 0.17, 0.5 \\ \hline\hline
 \end{tabular}
+}
 \end{centering}
-\caption{Summary of traits in generation $g$.}
+\caption{Summary of traits in generation $t$.}
 \label{table:traits}
 \end{table}
 
@@ -166,18 +168,20 @@ We summarize the model parameters in Table \ref{table:parameters}.
 \begin{tabular}{lll}
 {\bf Symbol} & {\bf Description} & {\bf Values}  \\ \hline \hline
   $N$ &  Number of hosts in each generation & 1000 \\ \hline 
-  $M$ &  Number of free-living symbionts & 1000 \\ \hline 
-  $c$ &  Maximum number of symbionts a single host can contain & 50 \\ \hline 
-  $\gamma_{\text{sym}}$ &  Mutation variability for one symbiont & 0.05 \\ \hline 
+  $M$ &  Number of free-living endosymbionts & 1000 \\ \hline 
+  $c$ &  Maximum number of endosymbionts a single host can contain & 50 \\ \hline 
+  $\gamma_{\text{sym}}$ &  Mutation variability for one endosymbiont & 0.05 \\ \hline 
   $\gamma_{\text{host}}$ &  Mutation variability for one host & 0.05 \\ \hline
-  $\mu_{\text{sym}}$ &  Mutation distribution for symbionts & $\text{Uniform}\left( -\gamma_{\text{sym}},\gamma_{\text{sym}} \right)$ \\ \hline
+  $\mu_{\text{sym}}$ &  Mutation distribution for endosymbionts & $\text{Uniform}\left( -\gamma_{\text{sym}},\gamma_{\text{sym}} \right)$ \\ \hline
   $\mu_{\text{host}}$ &  Mutation distribution for hosts & $\text{Uniform}\left( -\gamma_{\text{host}},\gamma_{\text{host}} \right)$ \\ \hline 
-  $\epsilon_{\text{sym}}$ &  Mutation probability for one symbiont per generation & 0.001 or 0.00001 \\ \hline 
+  $\epsilon_{\text{sym}}$ &  Mutation probability for one endosymbiont per generation & 0.001 or 0.00001 \\ \hline 
   $\epsilon_{\text{host}}$ &  Mutation probability for one host per generation & 0.001 or 0.00001 \\ \hline 
-  $W_{\text{out}}$ &  Number of swaps between free-living and non free-living symbionts per generation & 10 \\ \hline 
-  $W_{\text{in}}$ &  Number of swaps between symbionts in different hosts per generation & 10 \\ \hline 
+  $W_{\text{out}}$ &  Number of migrations between free-living and & 10 \\ 
+  &  non free-living endosymbionts per generation &  \\ \hline 
+  $W_{\text{in}}$ &  Number of migrations between endosymbionts & 10 \\
+  & in different hosts per generation & \\ \hline 
   $D_{\text{host}}$ &  Death probability of a host per generation & 0.2 \\ \hline 
-  $D_{\text{sym}}$ &  Death probability of a symbiont per generation  &  0.2 \\ \hline \hline
+  $D_{\text{sym}}$ &  Death probability of a endosymbiont per generation  &  0.2 \\ \hline \hline
 \end{tabular}
 \end{centering}
 \caption{Summary of parameters.}

@@ -29,10 +29,10 @@
 \usepackage[utf8x]{inputenc}
 \usepackage{float}
 \usepackage{subfig}
-\title{Transitions between mutualism, parasitism, predator-prey, and competition symbiosis scenarios}
+\title{Transitions between mutualism, parasitism, predator-prey, and competition in an endosymbiont-host system}
 \author{Esteban Vargas in collaboration with Adrian Gonzalez and Michael Lynch}
 \institute{Arizona State University}
-\date{April 23, 2025}
+\date{June 25, 2025}
 
 \begin{document}
 
@@ -64,20 +64,13 @@
 
 
 
+\end{frame}
 
-\textbf{Free-living symbiont} $(g,0,j)$ has fitness:
-\[
-F(g,0,j) = s_{\text{sym}}(g,0,j)
-\]
-\textbf{Symbiont} $(g,i,j)$ (inside host $i \neq 0$) has fitness:
-\[
-F(g,i,j) = s_{\text{sym}}(g,i,j) + h_{\text{sym}}(g,i,j) + e_{\text{host}}(g,i)
-\]
-\textbf{host} $(g,i)$ has fitness:
-\[
-F(g,i) = s_{\text{host}}(g,i) + h_{\text{host}}(g,i) \cdot K_{g,i} + \sum_{j=1}^{K_{g,i}} e_{\text{sym}}(g,i,j)
-\]
-where $K_{g,i}$ is the number of alive symbionts hosted by host $(g,i)$.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Stochastic model, steps}
+
+
 
 \end{frame}
 
@@ -88,25 +81,28 @@ where $K_{g,i}$ is the number of alive symbionts hosted by host $(g,i)$.
 
     \begin{table}[H]
 \begin{centering}
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{lll}
 {\bf Symbol} & {\bf Description} & {\bf Values}  \\ \hline \hline
   $N$ &  Number of hosts in each generation & 1000 \\ \hline 
-  $M$ &  Number of free-living symbionts & 1000 \\ \hline 
-  $c$ &  Maximum number of symbionts a single host can contain & 50 \\ \hline 
-  $\gamma_{\text{sym}}$ &  Mutation variability for one symbiont & 0.05 \\ \hline 
+  $M$ &  Number of free-living endosymbionts & 1000 \\ \hline 
+  $c$ &  Maximum number of endosymbionts a single host can contain & 50 \\ \hline 
+  $\gamma_{\text{sym}}$ &  Mutation variability for one endosymbiont & 0.05 \\ \hline 
   $\gamma_{\text{host}}$ &  Mutation variability for one host & 0.05 \\ \hline
-  $\mu_{\text{sym}}$ &  Mutation distribution for symbionts & $\text{Uniform}\left( -\gamma_{\text{sym}},\gamma_{\text{sym}} \right)$ \\ \hline
+  $\mu_{\text{sym}}$ &  Mutation distribution for endosymbionts & $\text{Uniform}\left( -\gamma_{\text{sym}},\gamma_{\text{sym}} \right)$ \\ \hline
   $\mu_{\text{host}}$ &  Mutation distribution for hosts & $\text{Uniform}\left( -\gamma_{\text{host}},\gamma_{\text{host}} \right)$ \\ \hline 
-  $\epsilon_{\text{sym}}$ &  Mutation probability for one symbiont per generation & 0.001 or 0.00001 \\ \hline 
+  $\epsilon_{\text{sym}}$ &  Mutation probability for one endosymbiont per generation & 0.001 or 0.00001 \\ \hline 
   $\epsilon_{\text{host}}$ &  Mutation probability for one host per generation & 0.001 or 0.00001 \\ \hline 
-  $W_{\text{out}}$ &  Number of swaps between free-living and non free-living symbionts per generation & 10 \\ \hline 
-  $W_{\text{in}}$ &  Number of swaps between symbionts in different hosts per generation & 10 \\ \hline 
+  $W_{\text{out}}$ &  Number of migrations between free-living and & 10 \\ 
+  &  non free-living endosymbionts per generation &  \\ \hline 
+  $W_{\text{in}}$ &  Number of migrations between endosymbionts & 10 \\
+  & in different hosts per generation & \\ \hline 
   $D_{\text{host}}$ &  Death probability of a host per generation & 0.2 \\ \hline 
-  $D_{\text{sym}}$ &  Death probability of a symbiont per generation  &  0.2 \\ \hline \hline
+  $D_{\text{sym}}$ &  Death probability of a endosymbiont per generation  &  0.2 \\ \hline \hline
 \end{tabular}
+}
+\caption{Parameters for simulations. We run 50 simulations for different combinations of initial conditions.}
 \end{centering}
-\caption{Summary of parameters.}
-\label{table:parameters}
 \end{table}
      
 \end{frame}
@@ -118,21 +114,26 @@ where $K_{g,i}$ is the number of alive symbionts hosted by host $(g,i)$.
 
 \begin{table}[H]
 \begin{centering}
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{lll}
 {\bf Symbol} & {\bf Description} & {\bf Initial velues}  \\ \hline \hline
-$s_{\text{host}}(g,i)$ & Baseline selection of host $i$ & $c =50$ \\ \hline
-$h_{\text{host}}(g,i)$ & Effect of harvesting of host $i$ on host selection &  0.25 \\ \hline
-$e_{\text{host}}(g,i)$ & Effect of host $i$ on selection of symbionts &  -0.75, -0.42, - 0.08, 0.25  \\ \hline
-$s_{\text{sym}}(g,i,j)$ & Baseline selection of symbiont $j$ in host $i$ & 1 \\ \hline
-$h_{\text{sym}}(g,i,j)$ & Effect of harvesting of symbiont $j$ on symbiont selection & 0.25 \\ \hline
-$e_{\text{sym}}(g,i,j)$ & Effect of symbiont $j$ on selection of host $i$ &  -0.75, -0.42, - 0.08, 0.25 \\ \hline 
+$s_{\text{host}}(t,i)$ & Baseline selection of host $i$ & $c =50$ \\ \hline
+$h_{\text{host}}(t,i)$ & Effect of harvesting by invividual host $i$ on its selection &  0.25 \\ \hline
+$e_{\text{host}}(t,i)$ & Effect of individual host $i$ on selection of its endosymbionts &  -0.75, -0.42, - 0.08, 0.25  \\ \hline
+$s_{\text{sym}}(t,i,j)$ & Baseline selection of individual endosymbiont $j$ in its individual host $i$ & 1 \\ \hline
+$h_{\text{sym}}(t,i,j)$ & Effect of harvesting by individual endosymbiont $j$ on its selection & 0.25 \\ \hline
+$e_{\text{sym}}(t,i,j)$ & Effect of individual endosymbiont $j$ on selection of its host $i$ &  -0.75, -0.42, - 0.08, 0.25 \\ \hline 
 $\theta_{\text{host}}$ & Mean of $h_{\text{host}}+e_{\text{sym}}$. Net symbiosis effect on host & -0.5, -0.17, - 0.17, 0.5 \\ \hline
-$\theta_{\text{sym}}$ & Mean of $h_{\text{sym}} + e_{\text{host}}$. Net symbiosis effect on symbionts & -0.5, -0.17, - 0.17, 0.5 \\ \hline\hline
+$\theta_{\text{sym}}$ & Mean of $h_{\text{sym}} + e_{\text{host}}$. Net symbiosis effect on endosymbionts & -0.5, -0.17, - 0.17, 0.5 \\ \hline\hline
 \end{tabular}
+}
+%\caption{Variables for generation $t$. The labels $i$ and $j$ refer to individuals. }
 \end{centering}
-\caption{Summary of traits in generation $g$.}
-\label{table:traits}
 \end{table}
+
+\begin{figure}
+  \includegraphics[scale = 0.4]{../Figures/initial_conditions.png}
+\end{figure}
 
 \end{frame}
 
