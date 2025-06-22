@@ -16,13 +16,13 @@ from collections import Counter
 
 #df_all = pd.read_csv('Data/df_N_1000.csv')
 
-df_all = pd.read_csv('Data/df_small_N_1000_3.csv')
+df_all = pd.read_csv('Data/df_all_I.csv')
 
 
 scenarios = ['Mutualism', 'Predator-prey', 'Parasitism', 'Competition']
 colors = {'Mutualism':"red",'Predator-prey':"blue", 'Parasitism':"green", 'Competition': "black"}
 
-N_sim = 3
+N_sim = 1
 N_gen = 10000
 
 epsilon_cell_large = 0.001
@@ -31,7 +31,7 @@ epsilon_sym_large = 0.001 #u_sym*L
 epsilon_cell_small = 0.00001
 epsilon_sym_small = 0.00001 #u_sym*L
 
-n_split = 4
+n_split = 12
 
 e_for_symbionts_ls = np.linspace(-0.75,0.25,n_split)
 e_for_cells_ls = np.linspace(-0.75,0.25,n_split)
@@ -44,19 +44,22 @@ h_for_symbionts_ls = n_split*[0.25]
 
 
 
-for epsilon_cell in [epsilon_cell_large, epsilon_cell_small]:
+for epsilon_cell in [epsilon_cell_large]:
     
-    for epsilon_sym in [epsilon_sym_large, epsilon_sym_small]:
+    for epsilon_sym in [epsilon_sym_large]:
 
         for e_sym in e_for_symbionts_ls:
 
                 for e_cell in e_for_cells_ls:
                     
+                    theta_cell_0 = h_for_cells_ls[0] + e_sym
+                    theta_sym_0 = h_for_symbionts_ls[0] + e_cell
+
                     for j in np.arange(N_sim):
 
                         df = df_all[ np.logical_and(df_all['epsilon_cell']==epsilon_cell, df_all['epsilon_sym']==epsilon_sym)]
-                        df_tmp = df[np.round(df['e_sym_0'],2) == np.round(e_sym,2)]
-                        df_tmp = df_tmp[np.round(df_tmp['e_cell_0'],2)==np.round(e_cell,2)]
+                        df_tmp = df[np.round(df['theta_sym_0'],2) == np.round(theta_sym_0,2)]
+                        df_tmp = df_tmp[np.round(df_tmp['theta_cell_0'],2)==np.round(theta_cell_0,2)]
                         df_tmp = df_tmp[df_tmp['sim']==j]
 
                         theta_cell = df_tmp["theta_cell"].iloc[0]
@@ -85,10 +88,10 @@ for epsilon_cell in [epsilon_cell_large, epsilon_cell_small]:
                         
 
 
-        plt.hlines(y = 0, xmin=-1, xmax =2, color = "black")
-        plt.vlines(x = 0, ymin =-1, ymax = 1.2, color = "black")
-        plt.xlim(-1,2)
-        plt.ylim(-1,1.2)
+        plt.hlines(y = 0, xmin=-0.55, xmax =0.55, color = "black")
+        plt.vlines(x = 0, ymin =-0.55, ymax = 0.55, color = "black")
+        #plt.xlim(-1,2)
+        #plt.ylim(-1,1.2)
 
         plt.grid()
         plt.xlabel(r'$\theta_{\text{host}} = e_{\text{sym}} + h_{\text{host}}$', fontsize = 16)
@@ -96,5 +99,5 @@ for epsilon_cell in [epsilon_cell_large, epsilon_cell_small]:
         plt.title(r'$\epsilon_{\text{host}}$ = '+ str(epsilon_cell)+ r', $\epsilon_{\text{sym}} = $'+str(epsilon_sym), fontsize = 18)
         plt.legend(bbox_to_anchor=(1.01, 1), borderaxespad=0, title = 'Scenario of the \n initial condition')
         plt.tight_layout()
-        plt.savefig('Figures/theta_trajectories_epsilon_host_'+ str(epsilon_cell)+ '_epsilon_sym_'+str(epsilon_sym)+'.png')
+        plt.savefig('Figures/initial_conditions.png')
         plt.show()
