@@ -17,19 +17,10 @@ from collections import Counter
 
 
 
-#df_all = pd.read_csv('Data/df_N_1000.csv')
 
-#df_all = pd.read_csv('Data/df_all_within_circle_only_competition.csv')
+type_plot = 'single_mut'
 
-#df_angle = pd.read_csv('Data/df_angle_within_circle_only_competition.csv')
-
-#df_all = pd.read_csv('Data/df_all_within_circle.csv')
-#df_angle = pd.read_csv('Data/df_angle_within_circle.csv')
-
-df_all = pd.read_csv('Data/df_all_III.csv')
-df_angle_1 = pd.read_csv('Data/df_angle_I.csv')
-df_angle_2 = pd.read_csv('Data/df_angle_III.csv')
-df_angle = pd.concat([df_angle_1,df_angle_2])
+df_angle = pd.read_csv('Data/df_angle_'+type_plot+'.csv')
 
 scenarios = ['Mutualism', 'Predator-prey', 'Parasitism', 'Competition']
 colors = {'Mutualism':"red",'Predator-prey':"blue", 'Parasitism':"green", 'Competition': "black"}
@@ -98,7 +89,7 @@ for i in np.arange(n_split):
         mean_generation = np.mean(generation_v)/N_gen_max
         
         mean_xy_m[i,j] = mean_xy
-        mean_generation_m[i,j] = mean_xy
+        mean_generation_m[i,j] = mean_generation
         p_value_x_m[i,j] = p_value_x
         p_value_y_m[i,j] = p_value_y
 
@@ -114,7 +105,8 @@ plt.ylabel(r'$\theta_{\text{sym}} = e_{\text{host}} + h_{\text{sym}}$', fontsize
 plt.title(r'$\epsilon_{\text{host}}$ = '+ str(epsilon_cell)+ r', $\epsilon_{\text{sym}} = $'+str(epsilon_sym), fontsize = 18)
 #plt.legend(bbox_to_anchor=(1.01, 1), borderaxespad=0, title = 'Scenario of the \n initial condition')
 plt.tight_layout()
-plt.savefig('Figures/all_arrows.png')
+#plt.savefig('Figures/all_arrows.png')
+plt.savefig('Figures/all_arrows_'+type_plot+'.png')
 plt.show()
 
 x , y = np.meshgrid(theta_cell_v, theta_sym_v)
@@ -126,36 +118,40 @@ plt.ylabel(r'$\theta_{\text{sym}} = e_{\text{host}} + h_{\text{sym}}$', fontsize
 plt.title(r'$\|(\Delta \theta_{\text{host}}, \Delta \theta_{\text{sym}})\|$, '+r'$\epsilon_{\text{host}}$ = '+ str(epsilon_cell)+ r', $\epsilon_{\text{sym}} = $'+str(epsilon_sym), fontsize = 15)
 plt.hlines(y = 0, xmin=-0.55, xmax =0.55, color = "red", linewidth = 3)
 plt.vlines(x = 0, ymin =-0.55, ymax = 0.55, color = "red", linewidth = 3)
-plt.savefig('Figures/diagonal_change.png')
+#plt.savefig('Figures/diagonal_change.png')
+plt.savefig('Figures/diagonal_change_'+type_plot+'.png')
 plt.show()
 
 
-plt.pcolormesh(y,x,p_value_x_m, cmap= 'PuOr')
+plt.pcolormesh(y,x,p_value_x_m, cmap= 'PuOr', vmin=0, vmax=1)
 plt.colorbar()
 plt.xlabel(r'$\theta_{\text{host}} = e_{\text{sym}} + h_{\text{host}}$', fontsize = 16)
 plt.ylabel(r'$\theta_{\text{sym}} = e_{\text{host}} + h_{\text{sym}}$', fontsize = 16)
 plt.title('p-value for '+ r'$\Delta \theta_{\text{host}}$, ' + r'$\epsilon_{\text{host}}$ = '+ str(epsilon_cell)+ r', $\epsilon_{\text{sym}} = $'+str(epsilon_sym), fontsize = 15)
 plt.hlines(y = 0, xmin=-0.55, xmax =0.55, color = "red", linewidth = 3)
 plt.vlines(x = 0, ymin =-0.55, ymax = 0.55, color = "red", linewidth = 3)
-plt.savefig('Figures/all_x_p_value.png')
+#plt.savefig('Figures/all_x_p_value.png')
+plt.savefig('Figures/all_x_p_value_'+type_plot+'.png')
 plt.show()
 
-plt.pcolormesh(y,x,p_value_y_m, cmap= 'PuOr')
+plt.pcolormesh(y,x,p_value_y_m, cmap= 'PuOr', vmin=0, vmax=1)
 plt.colorbar()
 plt.xlabel(r'$\theta_{\text{host}} = e_{\text{sym}} + h_{\text{host}}$', fontsize = 16)
 plt.ylabel(r'$\theta_{\text{sym}} = e_{\text{host}} + h_{\text{sym}}$', fontsize = 16)
 plt.title('p-value for '+ r'$\Delta \theta_{\text{sym}}, $' + r'$\epsilon_{\text{host}}$ = '+ str(epsilon_cell)+ r', $\epsilon_{\text{sym}} = $'+str(epsilon_sym), fontsize = 15)
 plt.hlines(y = 0, xmin=-0.55, xmax =0.55, color = "red", linewidth = 3)
 plt.vlines(x = 0, ymin =-0.55, ymax = 0.55, color = "red", linewidth = 3)
-plt.savefig('Figures/all_y_p_value.png')
+#plt.savefig('Figures/all_y_p_value.png')
+plt.savefig('Figures/all_y_p_value_'+type_plot+'.png')
 plt.show()
 
-plt.pcolormesh(y,x,mean_generation_m, cmap= 'PuOr')
+plt.pcolormesh(y,x,mean_generation_m, cmap= 'PuOr', vmin=0, vmax=1)
 plt.colorbar()
 plt.xlabel(r'$\theta_{\text{host}} = e_{\text{sym}} + h_{\text{host}}$', fontsize = 16)
 plt.ylabel(r'$\theta_{\text{sym}} = e_{\text{host}} + h_{\text{sym}}$', fontsize = 16)
 plt.title('hitting time to the circle '+r'$\epsilon_{\text{host}}$ = '+ str(epsilon_cell)+ r', $\epsilon_{\text{sym}} = $'+str(epsilon_sym), fontsize = 15)
 plt.hlines(y = 0, xmin=-0.55, xmax =0.55, color = "red", linewidth = 3)
 plt.vlines(x = 0, ymin =-0.55, ymax = 0.55, color = "red", linewidth = 3)
-plt.savefig('Figures/all_generations.png')
+#plt.savefig('Figures/all_generations.png')
+plt.savefig('Figures/all_generations_'+type_plot+'.png')
 plt.show()
