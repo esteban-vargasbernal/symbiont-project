@@ -29,7 +29,7 @@ colors = {'Mutualism':"red",'Predator-prey':"blue", 'Parasitism':"green", 'Compe
 epsilon_cell = 0.001
 epsilon_sym = 0.001 #u_sym*L
 
-N_sim = 10
+N_sim = 50
 n_split = 12
 N_gen_max = 500
 

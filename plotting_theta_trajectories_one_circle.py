@@ -28,7 +28,7 @@ colors = {'Mutualism':"red",'Predator-prey':"blue", 'Parasitism':"green", 'Compe
 epsilon_cell = 0.001
 epsilon_sym = 0.001 #u_sym*L
 
-N_sim = 40
+N_sim = 50
 n_split = 2
 N_gen_max = 500
 
@@ -90,7 +90,7 @@ for theta_cell_0 in [-0.5,0.5]:
 
         df_angle_tmp = df_angle[np.round(df_angle['theta_sym'],2) == np.round(theta_sym_0,2)]
         df_angle_tmp = df_angle_tmp[np.round(df_angle_tmp['theta_cell'],2)==np.round(theta_cell_0,2)]
-        df_angle_tmp = df_angle_tmp[df_angle_tmp['generation'] < (N_gen_max-1) ]
+        #df_angle_tmp = df_angle_tmp[df_angle_tmp['generation'] < (N_gen_max-1) ]
 
         angles_v = df_angle_tmp['angle']
 
