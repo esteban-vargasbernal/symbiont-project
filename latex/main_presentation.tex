@@ -141,14 +141,14 @@ $\theta_{\text{sym}}$ & Mean of $h_{\text{sym}} + e_{\text{host}}$. Net symbiosi
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\begin{frame}{}
+\begin{frame}{Mutations that affect all $s, h, e$}
 
 \begin{figure}[H]
     \centering
-    \subfloat[][]{\includegraphics[scale=0.3]{../Figures/theta_trajectories_one_circlet_Parasitism.png}}
-    \subfloat[][]{\includegraphics[scale=0.3]{../Figures/theta_trajectories_one_circlet_Mutualism.png}}\\
-    \subfloat[][]{\includegraphics[scale=0.3]{../Figures/theta_trajectories_one_circlet_Competition.png}}
-    \subfloat[][]{\includegraphics[scale=0.3]{../Figures/theta_trajectories_one_circlet_Predator-prey.png}}
+    \subfloat{\includegraphics[scale=0.3]{../Figures/theta_trajectories_one_circle_Parasitism_all_mut.png}}
+    \subfloat{\includegraphics[scale=0.3]{../Figures/theta_trajectories_one_circle_Mutualism_all_mut.png}}\\
+    \subfloat{\includegraphics[scale=0.3]{../Figures/theta_trajectories_one_circle_Competition_all_mut.png}}
+    \subfloat{\includegraphics[scale=0.3]{../Figures/theta_trajectories_one_circle_Predator-prey_all_mut.png}}
 \end{figure}
 
 \end{frame}
@@ -157,14 +157,49 @@ $\theta_{\text{sym}}$ & Mean of $h_{\text{sym}} + e_{\text{host}}$. Net symbiosi
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\begin{frame}{}
+\begin{frame}{Mutations that affect all $s, h, e$}
 
 \begin{figure}[H]
     \centering
-    \subfloat[][]{\includegraphics[scale=0.3]{../Figures/all_arrows.png}}
-    \subfloat[][]{\includegraphics[scale=0.3]{../Figures/all_x_p_value.png}}\\
-    \subfloat[][]{\includegraphics[scale=0.3]{../Figures/all_y_p_value.png}}
-    \subfloat[][]{\includegraphics[scale=0.3]{../Figures/all_generations.png}}
+    \subfloat{\includegraphics[scale=0.3]{../Figures/all_arrows_all_mut.png}}
+    \subfloat{\includegraphics[scale=0.3]{../Figures/all_x_p_value_all_mut.png}}\\
+    \subfloat{\includegraphics[scale=0.3]{../Figures/all_y_p_value_all_mut.png}}
+    \subfloat{\includegraphics[scale=0.3]{../Figures/all_generations_all_mut.png}}
+\end{figure}
+
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}{Mutations that affect only one of $s, h, e$}
+
+\begin{figure}[H]
+    \centering
+    \subfloat{\includegraphics[scale=0.3]{../Figures/theta_trajectories_one_circle_Parasitism_single_mut.png}}
+    \subfloat{\includegraphics[scale=0.3]{../Figures/theta_trajectories_one_circle_Mutualism_single_mut.png}}\\
+    \subfloat{\includegraphics[scale=0.3]{../Figures/theta_trajectories_one_circle_Competition_single_mut.png}}
+    \subfloat{\includegraphics[scale=0.3]{../Figures/theta_trajectories_one_circle_Predator-prey_single_mut.png}}
+\end{figure}
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}{Mutations that affect only one of  $s, h, e$}
+
+\begin{figure}[H]
+    \centering
+    \subfloat{\includegraphics[scale=0.3]{../Figures/all_arrows_single_mut.png}}
+    \subfloat{\includegraphics[scale=0.3]{../Figures/all_x_p_value_single_mut.png}}\\
+    \subfloat{\includegraphics[scale=0.3]{../Figures/all_y_p_value_single_mut.png}}
+    \subfloat{\includegraphics[scale=0.3]{../Figures/all_generations_single_mut.png}}
 \end{figure}
 
 
@@ -176,6 +211,12 @@ $\theta_{\text{sym}}$ & Mean of $h_{\text{sym}} + e_{\text{host}}$. Net symbiosi
 
 \begin{frame}{Some conlusions and future work}
 
+\begin{itemize}
+  \item When mutations affect all $s,h,e$ we get a) more diagonal transitions, b) faster transitions.
+  \medskip
+  \medskip
+  \item Need to explore the parameter space more (e.g., mutation rates, carrying capacity of endosymbiont, etc)
+\end{itemize}
 
 \end{frame}
 
