@@ -102,17 +102,17 @@ def update_traits_after_death(N,c,M,x_alive_new,x_cell,x_sym_in,x_sym_out):
     #w_sym_out = x_sym_out_copy['w']
     
     
-    s_cell = np.multiply(s_cell, x_alive_new['cell']) + 1 - x_alive_new['cell']
+    s_cell = np.multiply(s_cell, x_alive_new['cell']) #+ 1 - x_alive_new['cell']
     h_cell = np.multiply(h_cell, x_alive_new['cell'])
     e_cell = np.multiply(e_cell, x_alive_new['cell'])
     w_cell = np.multiply(w_cell, x_alive_new['cell'])
     
-    s_sym_in = np.multiply(s_sym_in, x_alive_new['sym_in']) + 1 - x_alive_new['sym_in']
+    s_sym_in = np.multiply(s_sym_in, x_alive_new['sym_in']) # + 1 - x_alive_new['sym_in']
     h_sym_in = np.multiply(h_sym_in, x_alive_new['sym_in'])
     e_sym_in = np.multiply(e_sym_in, x_alive_new['sym_in'])
     #w_sym_in = np.multiply(w_sym_in, x_alive_new['sym_in'])
     
-    s_sym_out = np.multiply(s_sym_out, x_alive_new['sym_out']) + 1 - x_alive_new['sym_out']
+    s_sym_out = np.multiply(s_sym_out, x_alive_new['sym_out']) # + 1 - x_alive_new['sym_out']
     h_sym_out = np.multiply(h_sym_out, x_alive_new['sym_out'])
     e_sym_out = np.multiply(e_sym_out, x_alive_new['sym_out'])
     #w_sym_out = np.multiply(w_sym_out, x_alive_new['sym_out'])
@@ -167,7 +167,8 @@ def birth_cell(N,c,M,x_alive,x_fitness, x_cell, x_sym_in):
 
         birth_cell_ids = np.random.choice(np.arange(N), dead_cell_ids.shape[0], replace = True, p = prob)
 
-
+        #print('dead cells = ', dead_cell_ids)
+        #print('birth cells = ', birth_cell_ids)
 
         # update traits
 
@@ -538,7 +539,7 @@ def mutation(N,c,M,x_alive, x_cell, x_sym_in,x_sym_out,x_mut, which_to_mutate_ce
             a_trunc = w_cell_min 
             b_trunc = w_cell_max
             loc = x_cell['w'][i_mutants[i],0]
-            scale = gamma_cell
+            scale = gamma_cell/100
             a, b = (a_trunc - loc) / scale, (b_trunc - loc) / scale
             delta_cell = truncnorm.rvs(a, b, loc = loc, scale = scale)
             x_cell_copy['w'][i_mutants[i],0] =  delta_cell
@@ -676,7 +677,7 @@ def one_generation(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym, x_mut ,
     
     x_cell_new, x_sym_in_new, x_sym_out_new = update_traits_after_death(N,c,M,x_alive3,x_cell,x_sym_in,x_sym_out)
     
-    
+    #print('s values for alive = ', x_cell_new['s'][np.where(x_alive3['cell'] ==1)])
     # Birth
     
     x_fitness = fitness(N,c,M,x_alive3,x_cell_new,x_sym_in_new,x_sym_out_new)
@@ -689,7 +690,7 @@ def one_generation(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym, x_mut ,
     # Swap
     
     #x_alive7,x_sym_in_new4, x_sym_out_new3 = swap_prop(N,c,M,x_alive6,x_sym_in_new3,x_sym_out_new2,w_in, w_out)
-    x_alive7,x_sym_in_new4, x_sym_out_new3 = swap(N,c,M,x_alive,x_sym_in,x_sym_out,x_cell)
+    x_alive7,x_sym_in_new4, x_sym_out_new3 = swap(N,c,M,x_alive6,x_sym_in_new3,x_sym_out_new2,x_cell_new2)
     
 
     # mutation
@@ -977,7 +978,7 @@ if __name__ == "__main__":
     np.random.seed()
 
     N_gen_max = 500
-    R = 0.01
+    R = 0.001
 
     N = 10**(3)
     c = 50
@@ -988,11 +989,11 @@ if __name__ == "__main__":
 
 
 
-    which_to_mutate_cell = np.arange(1,4) # 0 = s, 1 = h, 2 = e, 3 = w
+    which_to_mutate_cell = np.arange(1,3) # 0 = s, 1 = h, 2 = e, 3 = w
     which_to_mutate_sym = np.arange(1,3) # 0 = s, 1 = h, 2 = e
 
     epsilon_cell_large = 0.001
-    epsilon_sym_large = 0.001 #u_sym*L
+    epsilon_sym_large = 0.0005 #u_sym*L
 
     epsilon_cell_small = 0.00001
     epsilon_sym_small = 0.00001 #u_sym*L
