@@ -15,7 +15,7 @@ from collections import Counter
 
 
 
-type_plot = 'I' # only change this line
+type_plot = 'IV' # only change this line
 
 df = pd.read_csv('Data/df_all_'+type_plot+'.csv')
 df_angle = pd.read_csv('Data/df_angle_'+type_plot+'.csv')
@@ -27,7 +27,7 @@ colors = {'Mutualism':"red",'Predator-prey':"blue", 'Parasitism':"green", 'Compe
 
 
 epsilon_cell = 0.001
-epsilon_sym = 0.0005 #u_sym*L
+epsilon_sym = 0.001 #u_sym*L
 
 N_sim = 20
 n_split = 6
@@ -261,7 +261,7 @@ df_all = df
 
 
 
-extract_feature = 'e_cell' # 'alive_cell', 'alive_sym_in', 'alive_sym_out', 's_cell'
+extract_feature = 'w_cell' # 'alive_cell', 'alive_sym_in', 'alive_sym_out', 's_cell'
 N_sim_max = 5
 theta_list = np.linspace(-0.5,0.5,n_split)
 theta_cell = theta_list[0]
