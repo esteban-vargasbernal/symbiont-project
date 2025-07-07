@@ -22,7 +22,7 @@ df_all = pd.read_csv('Data/df_N_1000.csv')
 scenarios = ['Mutualism', 'Predator-prey', 'Parasitism', 'Competition']
 colors = {'Mutualism':"red",'Predator-prey':"blue", 'Parasitism':"green", 'Competition': "black"}
 
-N_sim = 1
+N_sim = 5
 N_gen = 500
 
 epsilon_cell_large = 0.001
@@ -31,7 +31,7 @@ epsilon_sym_large = 0.001 #u_sym*L
 epsilon_cell_small = 0.00001
 epsilon_sym_small = 0.00001 #u_sym*L
 
-n_split = 2
+n_split = 6
 
 theta_for_symbionts_ls = np.linspace(-0.5,0.5,n_split)
 theta_for_cells_ls = np.linspace(-0.5,0.5,n_split)
@@ -48,9 +48,9 @@ for epsilon_cell in [epsilon_cell_large, epsilon_cell_small]:
     
     for epsilon_sym in [epsilon_sym_large, epsilon_sym_small]:
 
-        for theta_sym in theta_for_symbionts_ls:
+        for theta_sym in theta_for_symbionts_ls[[2,3]]:
 
-                for theta_cell in theta_for_cells_ls:
+                for theta_cell in theta_for_cells_ls[[2,3]]:
                     
                     for j in np.arange(N_sim):
 
@@ -98,3 +98,40 @@ for epsilon_cell in [epsilon_cell_large, epsilon_cell_small]:
         plt.tight_layout()
         plt.savefig('Figures/theta_trajectories_epsilon_host_'+ str(epsilon_cell)+ '_epsilon_sym_'+str(epsilon_sym)+'.png')
         plt.show()
+
+
+
+
+
+
+extract_feature = 'w_cell' # 'alive_cell', 'alive_sym_in', 'alive_sym_out', 's_cell'
+N_sim_max = 1
+theta_list = np.linspace(-0.5,0.5,n_split)
+theta_cell = theta_list[0]
+theta_sym = theta_list[0]
+
+print(df_all)
+df = df_all[ np.logical_and(df_all['epsilon_cell']==epsilon_cell, df_all['epsilon_sym']==epsilon_sym)]
+df_tmp = df[np.round(df['theta_sym_0'],2) == np.round(theta_sym,2)]
+df_tmp = df_tmp[np.round(df_tmp['theta_cell_0'],2)==np.round(theta_cell,2)]
+df_tmp = df_tmp[df_tmp['sim']<N_sim_max]
+
+
+df_plot = df_tmp.pivot(columns = 'sim', index = 'generation')[extract_feature]
+df_plot.plot()
+plt.ylabel(extract_feature, fontsize =16)
+plt.title(r'$\epsilon_{\text{host}}$ = '+ str(epsilon_cell)+ r', $\epsilon_{\text{sym}} = $'+str(epsilon_sym) + r'$, \theta_{\text{host}}$ = '+ str(theta_cell)+ r', $\theta_{\text{sym}} = $'+str(theta_sym), fontsize = 15)
+plt.tight_layout()
+plt.savefig('Figures/'+extract_feature+'_epsilon_host_'+str(epsilon_cell)+'_epsilon_sym_'+str(epsilon_sym)+'_theta_host_'+ str(theta_cell)+ '_theta_sym_'+str(theta_sym)+'.png')
+plt.show()
+
+df_plot = df_tmp.pivot(columns = 'sim', index = 'generation')[['theta_cell','theta_sym']]
+df_plot.plot()
+plt.ylabel(r'$\theta_{\text{host}}$, $\theta_{\text{host}}$', fontsize =16)
+plt.title(r'$\epsilon_{\text{host}}$ = '+ str(epsilon_cell)+ r', $\epsilon_{\text{sym}} = $'+str(epsilon_sym)+r'$, \theta_{\text{host}}$ = '+ str(theta_cell)+ r', $\theta_{\text{sym}} = $'+str(theta_sym), fontsize = 15)
+plt.tight_layout()
+plt.savefig('Figures/thetas_zoom_in_epsilon_host_'+str(epsilon_cell)+'_epsilon_sym_'+str(epsilon_sym)+'_theta_host_'+ str(theta_cell)+ '_theta_sym_'+str(theta_sym)+'.png')
+plt.show()
+
+
+
