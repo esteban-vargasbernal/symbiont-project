@@ -15,7 +15,7 @@ from collections import Counter
 
 
 
-type_plot = 'IV' # only change this line
+type_plot = 'I' # only change this line
 
 df = pd.read_csv('Data/df_all_'+type_plot+'.csv')
 df_angle = pd.read_csv('Data/df_angle_'+type_plot+'.csv')
