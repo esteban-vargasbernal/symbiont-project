@@ -102,17 +102,17 @@ def update_traits_after_death(N,c,M,x_alive_new,x_cell,x_sym_in,x_sym_out):
     #w_sym_out = x_sym_out_copy['w']
     
     
-    s_cell = np.multiply(s_cell, x_alive_new['cell']) + 1 - x_alive_new['cell']
+    s_cell = np.multiply(s_cell, x_alive_new['cell']) #+ 1 - x_alive_new['cell']
     h_cell = np.multiply(h_cell, x_alive_new['cell'])
     e_cell = np.multiply(e_cell, x_alive_new['cell'])
     w_cell = np.multiply(w_cell, x_alive_new['cell'])
     
-    s_sym_in = np.multiply(s_sym_in, x_alive_new['sym_in']) + 1 - x_alive_new['sym_in']
+    s_sym_in = np.multiply(s_sym_in, x_alive_new['sym_in']) # + 1 - x_alive_new['sym_in']
     h_sym_in = np.multiply(h_sym_in, x_alive_new['sym_in'])
     e_sym_in = np.multiply(e_sym_in, x_alive_new['sym_in'])
     #w_sym_in = np.multiply(w_sym_in, x_alive_new['sym_in'])
     
-    s_sym_out = np.multiply(s_sym_out, x_alive_new['sym_out']) + 1 - x_alive_new['sym_out']
+    s_sym_out = np.multiply(s_sym_out, x_alive_new['sym_out']) # + 1 - x_alive_new['sym_out']
     h_sym_out = np.multiply(h_sym_out, x_alive_new['sym_out'])
     e_sym_out = np.multiply(e_sym_out, x_alive_new['sym_out'])
     #w_sym_out = np.multiply(w_sym_out, x_alive_new['sym_out'])
@@ -167,7 +167,8 @@ def birth_cell(N,c,M,x_alive,x_fitness, x_cell, x_sym_in):
 
         birth_cell_ids = np.random.choice(np.arange(N), dead_cell_ids.shape[0], replace = True, p = prob)
 
-
+        #print('dead cells = ', dead_cell_ids)
+        #print('birth cells = ', birth_cell_ids)
 
         # update traits
 
@@ -249,78 +250,6 @@ def birth_sym_out(N,c,M,x_alive_pre,x_fitness, x_sym_out):
 
     return(x_alive_copy, x_sym_out_copy)
 
-        
-#################
-
-def swap_prop(N,c,M,x_alive,x_sym_in,x_sym_out,w_in, w_out):
-    
-    #np.random.seed(123)
-    
-    x_alive_copy = copy.deepcopy(x_alive)
-    x_sym_in_copy = copy.deepcopy(x_sym_in)
-    x_sym_out_copy = copy.deepcopy(x_sym_out)
-    
-    W_in_list = []
-    W_out_list = []
-    
-    alive_cell_ids = np.array(np.where(x_alive_copy['cell']==1)).transpose()
-    N_alive = alive_cell_ids.shape[0]
-
-    W_in = math.floor(w_in* N_alive)
-    W_out = math.floor(w_out* N_alive)
-
-    while len(W_in_list) < 2*W_in:
-        
-       
-        i_pair_ids = np.random.choice(np.arange(N_alive), 2, replace = False)
-        i_pair = list(alive_cell_ids[i_pair_ids,0])
-    
-        j_pair = list(np.random.choice(np.arange(c),2, replace = True))
-
-        if( ([i_pair[0],j_pair[0]] not in W_in_list) and ([i_pair[1],j_pair[1]] not in W_in_list) ):
-            
-            
-            W_in_list.append([i_pair[0],j_pair[0]])
-            W_in_list.append([i_pair[1],j_pair[1]])
-            
-            x_alive_copy['sym_in'][i_pair[0],j_pair[0]] = x_alive['sym_in'][i_pair[1],j_pair[1]] 
-            
-            x_sym_in_copy['s'][i_pair[0],j_pair[0]] = x_sym_in['s'][i_pair[1],j_pair[1]]
-            x_sym_in_copy['h'][i_pair[0],j_pair[0]] = x_sym_in['h'][i_pair[1],j_pair[1]]
-            x_sym_in_copy['e'][i_pair[0],j_pair[0]] = x_sym_in['e'][i_pair[1],j_pair[1]]
-
-            x_alive_copy['sym_in'][i_pair[1],j_pair[1]] = x_alive['sym_in'][i_pair[0],j_pair[0]] 
-            
-            x_sym_in_copy['s'][i_pair[1],j_pair[1]] = x_sym_in['s'][i_pair[0],j_pair[0]]
-            x_sym_in_copy['h'][i_pair[1],j_pair[1]] = x_sym_in['h'][i_pair[0],j_pair[0]]
-            x_sym_in_copy['e'][i_pair[1],j_pair[1]] = x_sym_in['e'][i_pair[0],j_pair[0]]
-
-
-
-    while len(W_out_list) < W_out:
-        
-        i_in_id = np.random.choice(np.arange(N_alive))
-        i_in = alive_cell_ids[i_in_id,0]
-        
-        j_in = np.random.choice(np.arange(c))
-        j_out = np.random.choice(np.arange(M))
-        
-        if( ([i_in,j_in] not in W_in_list) and (j_out not in W_out_list)):
-                        
-            W_out_list.append(j_out)
-            
-            x_alive_copy['sym_in'][i_in,j_in] = x_alive['sym_out'][0,j_out] 
-            x_alive_copy['sym_out'][0,j_out] = x_alive['sym_in'][i_in,j_in] 
-            
-            x_sym_in_copy['s'][i_in,j_in] = x_sym_out['s'][0,j_out]
-            x_sym_in_copy['h'][i_in,j_in] = x_sym_out['h'][0,j_out]
-            x_sym_in_copy['e'][i_in,j_in] = x_sym_out['e'][0,j_out]
-            
-            x_sym_out_copy['s'][0,j_out] = x_sym_in['s'][i_in,j_in]
-            x_sym_out_copy['h'][0,j_out] = x_sym_in['h'][i_in,j_in]
-            x_sym_out_copy['e'][0,j_out] = x_sym_in['e'][i_in,j_in]
-
-    return(x_alive_copy, x_sym_in_copy, x_sym_out_copy)
         
 
 #################
@@ -510,10 +439,9 @@ def mutation_old(N,c,M,x_alive, x_cell, x_sym_in,x_sym_out,x_mut):
 
 
 #################
-def mutation(N,c,M,x_alive, x_cell, x_sym_in,x_sym_out,x_mut):
+def mutation(N,c,M,x_alive, x_cell, x_sym_in,x_sym_out,x_mut, which_to_mutate_cell, which_to_mutate_sym):
     
-    which_to_mutate_cell = np.arange(1,4) # 0 = s, 1 = h, 2 = e, 3 = w
-    which_to_mutate_sym = np.arange(1,3) # 0 = s, 1 = h, 2 = e, 3 = w
+ 
 
     s_cell_min = x_mut['s_cell_min']
     s_cell_max = x_mut['s_cell_max']
@@ -586,7 +514,7 @@ def mutation(N,c,M,x_alive, x_cell, x_sym_in,x_sym_out,x_mut):
         if i_trait == 0:
             a_trunc = s_cell_min 
             b_trunc = s_cell_max
-            loc = x_cell['s'][i_mutants[i],0]
+            loc = x_cell['s'][i_mutants[i],0] - 2*gamma_cell
             scale = gamma_cell
             a, b = (a_trunc - loc) / scale, (b_trunc - loc) / scale
             delta_cell = truncnorm.rvs(a, b, loc = loc, scale = scale)
@@ -594,7 +522,7 @@ def mutation(N,c,M,x_alive, x_cell, x_sym_in,x_sym_out,x_mut):
         if i_trait == 1:
             a_trunc = h_cell_min 
             b_trunc = h_cell_max
-            loc = x_cell['h'][i_mutants[i],0]
+            loc = x_cell['h'][i_mutants[i],0] - 2*gamma_cell
             scale = gamma_cell
             a, b = (a_trunc - loc) / scale, (b_trunc - loc) / scale
             delta_cell = truncnorm.rvs(a, b, loc = loc, scale = scale)
@@ -602,7 +530,7 @@ def mutation(N,c,M,x_alive, x_cell, x_sym_in,x_sym_out,x_mut):
         if i_trait == 2:
             a_trunc = e_cell_min 
             b_trunc = e_cell_max
-            loc = x_cell['e'][i_mutants[i],0]
+            loc = x_cell['e'][i_mutants[i],0] - 2*gamma_cell
             scale = gamma_cell
             a, b = (a_trunc - loc) / scale, (b_trunc - loc) / scale
             delta_cell = truncnorm.rvs(a, b, loc = loc, scale = scale)
@@ -610,8 +538,8 @@ def mutation(N,c,M,x_alive, x_cell, x_sym_in,x_sym_out,x_mut):
         if i_trait == 3:
             a_trunc = w_cell_min 
             b_trunc = w_cell_max
-            loc = x_cell['w'][i_mutants[i],0]
-            scale = gamma_cell
+            loc = x_cell['w'][i_mutants[i],0] - 2*gamma_cell
+            scale = gamma_cell/100
             a, b = (a_trunc - loc) / scale, (b_trunc - loc) / scale
             delta_cell = truncnorm.rvs(a, b, loc = loc, scale = scale)
             x_cell_copy['w'][i_mutants[i],0] =  delta_cell
@@ -645,7 +573,7 @@ def mutation(N,c,M,x_alive, x_cell, x_sym_in,x_sym_out,x_mut):
         if i_trait == 0:
             a_trunc = s_sym_in_min 
             b_trunc = s_sym_in_max
-            loc = x_sym_in['s'][i_mutants[i],j_mutants[i]] 
+            loc = x_sym_in['s'][i_mutants[i],j_mutants[i]] -2*gamma_sym_in
             scale = gamma_sym_in
             a, b = (a_trunc - loc) / scale, (b_trunc - loc) / scale
             delta_in = truncnorm.rvs(a, b, loc = loc, scale = scale)
@@ -653,7 +581,7 @@ def mutation(N,c,M,x_alive, x_cell, x_sym_in,x_sym_out,x_mut):
         if i_trait == 1:
             a_trunc = h_sym_in_min 
             b_trunc = h_sym_in_max
-            loc = x_sym_in['h'][i_mutants[i],j_mutants[i]] 
+            loc = x_sym_in['h'][i_mutants[i],j_mutants[i]] -2*gamma_sym_in
             scale = gamma_sym_in
             a, b = (a_trunc - loc) / scale, (b_trunc - loc) / scale
             delta_in = truncnorm.rvs(a, b, loc = loc, scale = scale)
@@ -661,7 +589,7 @@ def mutation(N,c,M,x_alive, x_cell, x_sym_in,x_sym_out,x_mut):
         if i_trait == 2:    
             a_trunc = e_sym_in_min 
             b_trunc = e_sym_in_max
-            loc = x_sym_in['e'][i_mutants[i],j_mutants[i]] 
+            loc = x_sym_in['e'][i_mutants[i],j_mutants[i]] -2*gamma_sym_in
             scale = gamma_sym_in
             a, b = (a_trunc - loc) / scale, (b_trunc - loc) / scale
             delta_in = truncnorm.rvs(a, b, loc = loc, scale = scale)
@@ -702,7 +630,7 @@ def mutation(N,c,M,x_alive, x_cell, x_sym_in,x_sym_out,x_mut):
         if i_trait == 0:
             a_trunc = s_sym_out_min 
             b_trunc = s_sym_out_max
-            loc = x_sym_out_copy['s'][0,i_mutants_out[i]]
+            loc = x_sym_out_copy['s'][0,i_mutants_out[i]] -2*gamma_sym_out
             scale = gamma_sym_out
             a, b = (a_trunc - loc) / scale, (b_trunc - loc) / scale
             delta_out = truncnorm.rvs(a, b, loc = loc, scale = scale)
@@ -710,7 +638,7 @@ def mutation(N,c,M,x_alive, x_cell, x_sym_in,x_sym_out,x_mut):
         if i_trait == 1:
             a_trunc = h_sym_out_min 
             b_trunc = h_sym_out_max
-            loc = x_sym_out_copy['h'][0,i_mutants_out[i]]
+            loc = x_sym_out_copy['h'][0,i_mutants_out[i]] -2*gamma_sym_out
             scale = gamma_sym_out
             a, b = (a_trunc - loc) / scale, (b_trunc - loc) / scale
             delta_out = truncnorm.rvs(a, b, loc = loc, scale = scale)
@@ -718,7 +646,7 @@ def mutation(N,c,M,x_alive, x_cell, x_sym_in,x_sym_out,x_mut):
         if i_trait == 2:
             a_trunc = e_sym_out_min 
             b_trunc = e_sym_out_max
-            loc = x_sym_out_copy['e'][0,i_mutants_out[i]]
+            loc = x_sym_out_copy['e'][0,i_mutants_out[i]] -2*gamma_sym_out
             scale = gamma_sym_out
             a, b = (a_trunc - loc) / scale, (b_trunc - loc) / scale
             delta_out = truncnorm.rvs(a, b, loc = loc, scale = scale)
@@ -737,7 +665,7 @@ def mutation(N,c,M,x_alive, x_cell, x_sym_in,x_sym_out,x_mut):
 
 #######################
 
-def one_generation(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym,w_in, w_out, x_mut):
+def one_generation(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym, x_mut ,which_to_mutate_cell, which_to_mutate_sym):
     
     #np.random.seed(123)
 
@@ -749,7 +677,7 @@ def one_generation(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym,w_in, w_
     
     x_cell_new, x_sym_in_new, x_sym_out_new = update_traits_after_death(N,c,M,x_alive3,x_cell,x_sym_in,x_sym_out)
     
-    
+    #print('s values for alive = ', x_cell_new['s'][np.where(x_alive3['cell'] ==1)])
     # Birth
     
     x_fitness = fitness(N,c,M,x_alive3,x_cell_new,x_sym_in_new,x_sym_out_new)
@@ -762,141 +690,16 @@ def one_generation(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym,w_in, w_
     # Swap
     
     #x_alive7,x_sym_in_new4, x_sym_out_new3 = swap_prop(N,c,M,x_alive6,x_sym_in_new3,x_sym_out_new2,w_in, w_out)
-    x_alive7,x_sym_in_new4, x_sym_out_new3 = swap(N,c,M,x_alive,x_sym_in,x_sym_out,x_cell)
+    x_alive7,x_sym_in_new4, x_sym_out_new3 = swap(N,c,M,x_alive6,x_sym_in_new3,x_sym_out_new2,x_cell_new2)
     
 
     # mutation
     
-    x_cell_new3, x_sym_in_new5, x_sym_out_new4 = mutation(N,c,M,x_alive7, x_cell_new2, x_sym_in_new4, x_sym_out_new3,x_mut)
+    x_cell_new3, x_sym_in_new5, x_sym_out_new4 = mutation(N,c,M,x_alive7, x_cell_new2, x_sym_in_new4, x_sym_out_new3,x_mut,which_to_mutate_cell, which_to_mutate_sym)
 
     
     return(x_alive7, x_cell_new3, x_sym_in_new5, x_sym_out_new4)
 
-
-
-
-#################
-
-def model_symbionts_with_mutation(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym,W_in, W_out, x_mut, N_gen):
-    
-    x_alive_tmp = copy.deepcopy(x_alive)
-    x_cell_tmp =  copy.deepcopy(x_cell)
-    x_sym_in_tmp = copy.deepcopy(x_sym_in)
-    x_sym_out_tmp = copy.deepcopy(x_sym_out)
-    
-    col_names = ['generation', 'alive_cell', 'alive_sym_in', 'alive_sym_out',
-           'sym_in_dead',
-           'sym_out_dead',
-           'fitness_cell', 'fitness_sym_in', 'fitness_sym_out',
-                's_cell', 'h_cell', 'e_cell', 'w_cell',
-                's_sym_in', 'h_sym_in', 'e_sym_in',
-                'theta_cell', 'theta_sym','scenario']
-    
-    df = pd.DataFrame(columns = col_names)
-
-    for i in np.arange(N_gen):
-        
-        generation = i
-
-        alive_cell = len(np.where(x_alive_tmp['cell']==1)[0])
-        alive_sym_in = len(np.where(x_alive_tmp['sym_in']==1)[0])
-        #print('alive sym',alive_sym_in)
-        alive_sym_out = len(np.where(x_alive_tmp['sym_out']==1)[0])
-
-        sym_in_dead = len(np.where(x_sym_in_tmp['h']==0)[0])
-
-        sym_out_dead = len(np.where(x_sym_out_tmp['h']==0)[0])
-
-        fit = fitness(N,c,M,x_alive_tmp,x_cell_tmp,x_sym_in_tmp,x_sym_out_tmp)
-
-        fitness_cell = mean_or_zero(fit['cell'][np.where(x_alive_tmp['cell']==1)])
-
-        fitness_sym_in =  mean_or_zero(fit['sym_in'][np.where(x_alive_tmp['sym_in']==1)])
-        
-        fitness_sym_out = mean_or_zero(fit['sym_out'][np.where(x_alive_tmp['sym_out']==1)])
-        
-        s_sym_in = mean_or_zero(x_sym_in_tmp['s'][np.where(x_alive_tmp['sym_in']==1)])
-        h_sym_in = mean_or_zero(x_sym_in_tmp['h'][np.where(x_alive_tmp['sym_in']==1)])
-        e_sym_in = mean_or_zero(x_sym_in_tmp['e'][np.where(x_alive_tmp['sym_in']==1)])
-
-        s_cell = mean_or_zero(x_cell_tmp['s'][np.where(x_alive_tmp['cell']==1)])
-        h_cell = mean_or_zero(x_cell_tmp['h'][np.where(x_alive_tmp['cell']==1)])
-        e_cell = mean_or_zero(x_cell_tmp['e'][np.where(x_alive_tmp['cell']==1)])
-        w_cell = mean_or_zero(x_cell_tmp['w'][np.where(x_alive_tmp['cell']==1)])
-
-        theta_cell = e_sym_in + h_cell
-        theta_sym = e_cell + h_sym_in
-
-        if theta_cell >= 0 and theta_sym >= 0:
-            scenario = "Mutualism"   
-        if theta_cell > 0 and theta_sym < 0:
-            scenario = "Predator-prey"    
-        if theta_cell < 0 and theta_sym > 0:
-            scenario = "Parasitism" 
-        if theta_cell < 0 and theta_sym < 0:
-            scenario = "Competition"       
-
-
-        data_tmp = [generation, alive_cell, alive_sym_in, alive_sym_out,
-                    sym_in_dead,
-                    sym_out_dead,
-                    fitness_cell, fitness_sym_in, fitness_sym_out,
-                    s_cell, h_cell, e_cell, w_cell,
-                    s_sym_in, h_sym_in, e_sym_in,
-                    theta_cell, theta_sym, scenario]
-        
-        df.loc[i] = data_tmp
-        
-        #if i%100 ==0: 
-            #print('')
-            #print('Generation number ', i)
-            #print('')
-            
-        
-        #np.random.seed(123 + 100*i)
-        x_alive_tmp,x_cell_tmp,x_sym_in_tmp,x_sym_out_tmp =one_generation(N,c,M,x_alive_tmp,x_cell_tmp,x_sym_in_tmp,x_sym_out_tmp,D_cell,D_sym,W_in, W_out, x_mut)
-        
-    df['scenario_start'] = df['scenario'].iloc[0]
-    df['scenario_end'] = df['scenario'].iloc[-1] 
-    df['epsilon_cell'] = x_mut['epsilon_cell']
-    df['epsilon_sym'] = x_mut['epsilon_sym_in']  
-    return( df)
-
-#################
-
-
-def many_simulations_with_mutations(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym,W_in, W_out, x_mut, N_gen,N_sim):
-    
-    col_names = ['generation', 'alive_cell', 'alive_sym_in', 'alive_sym_out',
-           'sym_in_dead',
-           'sym_out_dead',
-           'fitness_cell', 'fitness_sym_in', 'fitness_sym_out',
-            's_cell', 'h_cell', 'e_cell', 'w_cell',
-            's_sym_in', 'h_sym_in', 'e_sym_in',
-                'theta_cell', 'theta_sym', 'scenario',
-                'scenario_start','scenario_end',
-                'epsilon_cell', 'epsilon_sym',
-                'e_cell_0', 'e_sym_0']
-    
-    df = pd.DataFrame(columns = col_names)
-
-    
-    for j in np.arange(N_sim):
-        print('')
-        print('######################')
-        print('Simulation number = ',j)
-        print('######################')
-        print('')
-        df_tmp = model_symbionts_with_mutation(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym,W_in, W_out, x_mut, N_gen)
-        df_tmp['sim'] = N_gen*[j]
-        df_tmp['e_cell_0'] =  np.round(df_tmp['e_cell'].iloc[0],2)
-        df_tmp['e_sym_0'] = np.round(df_tmp['e_sym_in'].iloc[0],2)
-        df = pd.concat([df,df_tmp])
-    
-    return(df)
-        
-def pairwise_combinations(vector1, vector2):
-    return np.array(list(itertools.product(vector1, vector2)))
 
 
 
@@ -913,6 +716,9 @@ def get_scenario(theta_cell, theta_sym):
         scenario = "Competition"    
     return(scenario)
 
+
+def pairwise_combinations(vector1, vector2):
+    return np.array(list(itertools.product(vector1, vector2)))
 
 ###################################################
 def get_angle(delta_theta_cell, delta_theta_sym):
@@ -935,7 +741,7 @@ def get_distance(delta_theta_cell, delta_theta_sym):
 
 ###################################################
 
-def model_symbionts_within_circle(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym,W_in, W_out, x_mut, N_gen_max, R):
+def model_symbionts_within_circle(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym, x_mut, N_gen_max, R,which_to_mutate_cell, which_to_mutate_sym):
     
     x_alive_tmp = copy.deepcopy(x_alive)
     x_cell_tmp =  copy.deepcopy(x_cell)
@@ -1008,7 +814,7 @@ def model_symbionts_within_circle(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell
         
         df.loc[i] = data_tmp
                 
-        x_alive_tmp,x_cell_tmp,x_sym_in_tmp,x_sym_out_tmp =one_generation(N,c,M,x_alive_tmp,x_cell_tmp,x_sym_in_tmp,x_sym_out_tmp,D_cell,D_sym,W_in, W_out, x_mut)
+        x_alive_tmp,x_cell_tmp,x_sym_in_tmp,x_sym_out_tmp =one_generation(N,c,M,x_alive_tmp,x_cell_tmp,x_sym_in_tmp,x_sym_out_tmp,D_cell,D_sym, x_mut, which_to_mutate_cell, which_to_mutate_sym)
 
         d = get_distance(delta_theta_cell, delta_theta_sym)
         
@@ -1027,7 +833,7 @@ def model_symbionts_within_circle(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell
 #################
 
 
-def many_simulations_within_circle(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym,W_in, W_out, x_mut, N_gen_max, R, N_sim):
+def many_simulations_within_circle(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym, x_mut, N_gen_max, R, N_sim, which_to_mutate_cell, which_to_mutate_sym):
     
     x_alive_tmp = copy.deepcopy(x_alive)
     x_cell_tmp =  copy.deepcopy(x_cell)
@@ -1062,7 +868,7 @@ def many_simulations_within_circle(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cel
         print('Simulation number = ',j)
         print('######################')
         print('')
-        one_sim = model_symbionts_within_circle(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym,W_in, W_out, x_mut, N_gen_max, R)
+        one_sim = model_symbionts_within_circle(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym, x_mut, N_gen_max, R, which_to_mutate_cell, which_to_mutate_sym)
         df_tmp = one_sim['df']
         df_tmp['theta_cell_0'] =  np.round(df_tmp['theta_cell'].iloc[0],2)
         df_tmp['theta_sym_0'] = np.round(df_tmp['theta_sym'].iloc[0],2)
@@ -1077,4 +883,124 @@ def many_simulations_within_circle(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cel
     return(dict(df = df, df_angle = df_angle))
     
 
+
+
+
+
+
+def model_symbionts_with_mutation(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym, x_mut, N_gen, which_to_mutate_cell, which_to_mutate_sym):
+    
+    
+    x_alive_tmp = copy.deepcopy(x_alive)
+    x_cell_tmp =  copy.deepcopy(x_cell)
+    x_sym_in_tmp = copy.deepcopy(x_sym_in)
+    x_sym_out_tmp = copy.deepcopy(x_sym_out)
+
+    
+    col_names = ['generation', 'alive_cell', 'alive_sym_in', 'alive_sym_out',
+           'fitness_cell', 'fitness_sym_in', 'fitness_sym_out',
+                's_cell', 'h_cell', 'e_cell', 'w_cell',
+                's_sym_in', 'h_sym_in', 'e_sym_in',
+                'theta_cell', 'theta_sym','scenario']
+    
+    df = pd.DataFrame(columns = col_names)
+
+    i = 0
+    
+    for i in np.arange(N_gen):
+        
+        #print('i = ', i, ', d = ',d)
+        generation = i
+
+        alive_cell = len(np.where(x_alive_tmp['cell']==1)[0])
+        alive_sym_in = len(np.where(x_alive_tmp['sym_in']==1)[0])
+        #print('alive sym',alive_sym_in)
+        alive_sym_out = len(np.where(x_alive_tmp['sym_out']==1)[0])
+
+        sym_in_dead = len(np.where(x_sym_in_tmp['h']==0)[0])
+
+        sym_out_dead = len(np.where(x_sym_out_tmp['h']==0)[0])
+
+        fit = fitness(N,c,M,x_alive_tmp,x_cell_tmp,x_sym_in_tmp,x_sym_out_tmp)
+
+        fitness_cell = mean_or_zero(fit['cell'][np.where(x_alive_tmp['cell']==1)])
+
+        fitness_sym_in =  mean_or_zero(fit['sym_in'][np.where(x_alive_tmp['sym_in']==1)])
+        
+        fitness_sym_out = mean_or_zero(fit['sym_out'][np.where(x_alive_tmp['sym_out']==1)])
+        
+        s_sym_in = mean_or_zero(x_sym_in_tmp['s'][np.where(x_alive_tmp['sym_in']==1)])
+        h_sym_in = mean_or_zero(x_sym_in_tmp['h'][np.where(x_alive_tmp['sym_in']==1)])
+        e_sym_in = mean_or_zero(x_sym_in_tmp['e'][np.where(x_alive_tmp['sym_in']==1)])
+
+        s_cell = mean_or_zero(x_cell_tmp['s'][np.where(x_alive_tmp['cell']==1)])
+        h_cell = mean_or_zero(x_cell_tmp['h'][np.where(x_alive_tmp['cell']==1)])
+        e_cell = mean_or_zero(x_cell_tmp['e'][np.where(x_alive_tmp['cell']==1)])
+        w_cell = mean_or_zero(x_cell_tmp['w'][np.where(x_alive_tmp['cell']==1)])
+
+        theta_cell = e_sym_in + h_cell
+        theta_sym = e_cell + h_sym_in
+
+     
+
+        scenario = get_scenario(theta_cell, theta_sym)
+        
+        data_tmp = [generation, alive_cell, alive_sym_in, alive_sym_out,
+                    fitness_cell, fitness_sym_in, fitness_sym_out,
+                    s_cell, h_cell, e_cell, w_cell, 
+                    s_sym_in, h_sym_in, e_sym_in,
+                    theta_cell, theta_sym, scenario]
+        
+        df.loc[i] = data_tmp
+                
+        x_alive_tmp,x_cell_tmp,x_sym_in_tmp,x_sym_out_tmp =one_generation(N,c,M,x_alive_tmp,x_cell_tmp,x_sym_in_tmp,x_sym_out_tmp,D_cell,D_sym, x_mut ,which_to_mutate_cell, which_to_mutate_sym)
+
+        
+    df['scenario_start'] = df['scenario'].iloc[0]
+    df['scenario_end'] = df['scenario'].iloc[-1] 
+    df['epsilon_cell'] = x_mut['epsilon_cell']
+    df['epsilon_sym'] = x_mut['epsilon_sym_in']  
+    return( df )
+
+
+#################
+
+
+def many_simulations_with_mutations(N,c,M,x_alive,x_cell,x_sym_in,x_sym_out,D_cell,D_sym, x_mut, N_gen, N_sim, which_to_mutate_cell, which_to_mutate_sym):
+    
+    x_alive_tmp = copy.deepcopy(x_alive)
+    x_cell_tmp =  copy.deepcopy(x_cell)
+    x_sym_in_tmp = copy.deepcopy(x_sym_in)
+    x_sym_out_tmp = copy.deepcopy(x_sym_out)
+
+
+    col_names = ['generation', 'alive_cell', 'alive_sym_in', 'alive_sym_out',
+           'fitness_cell', 'fitness_sym_in', 'fitness_sym_out',
+            's_cell', 'h_cell', 'e_cell', 'w_cell',
+            's_sym_in', 'h_sym_in', 'e_sym_in',
+                'theta_cell', 'theta_sym', 'scenario',
+                'scenario_start','scenario_end',
+                'epsilon_cell', 'epsilon_sym',
+                'theta_cell_0', 'theta_sym_0', 'sim']
+    
+    df = pd.DataFrame(columns = col_names)
+
+    
+    for j in np.arange(N_sim):
+        print('')
+        print('######################')
+        print('Simulation number = ',j)
+        print('######################')
+        print('')
+        df_tmp = model_symbionts_with_mutation(N,c,M,x_alive_tmp,x_cell_tmp,x_sym_in_tmp,x_sym_out_tmp,D_cell,D_sym, x_mut, N_gen, which_to_mutate_cell, which_to_mutate_sym)
+        df_tmp['theta_cell_0'] =  np.round(df_tmp['theta_cell'].iloc[0],2)
+        df_tmp['theta_sym_0'] = np.round(df_tmp['theta_sym'].iloc[0],2)
+        df_tmp['sim'] = j
+        df = pd.concat([df,df_tmp])
+
+        
+   
+    #print(df_angle.shape)
+    return(df)
+    
 

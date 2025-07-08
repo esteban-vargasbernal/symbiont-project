@@ -438,6 +438,7 @@ def mutation_old(N,c,M,x_alive, x_cell, x_sym_in,x_sym_out,x_mut):
     return(x_cell_copy, x_sym_in_copy, x_sym_out_copy)
 
 
+
 #################
 def mutation(N,c,M,x_alive, x_cell, x_sym_in,x_sym_out,x_mut, which_to_mutate_cell, which_to_mutate_sym):
     
@@ -514,7 +515,7 @@ def mutation(N,c,M,x_alive, x_cell, x_sym_in,x_sym_out,x_mut, which_to_mutate_ce
         if i_trait == 0:
             a_trunc = s_cell_min 
             b_trunc = s_cell_max
-            loc = x_cell['s'][i_mutants[i],0]
+            loc = x_cell['s'][i_mutants[i],0] - 2*gamma_cell
             scale = gamma_cell
             a, b = (a_trunc - loc) / scale, (b_trunc - loc) / scale
             delta_cell = truncnorm.rvs(a, b, loc = loc, scale = scale)
@@ -522,7 +523,7 @@ def mutation(N,c,M,x_alive, x_cell, x_sym_in,x_sym_out,x_mut, which_to_mutate_ce
         if i_trait == 1:
             a_trunc = h_cell_min 
             b_trunc = h_cell_max
-            loc = x_cell['h'][i_mutants[i],0]
+            loc = x_cell['h'][i_mutants[i],0] - 2*gamma_cell
             scale = gamma_cell
             a, b = (a_trunc - loc) / scale, (b_trunc - loc) / scale
             delta_cell = truncnorm.rvs(a, b, loc = loc, scale = scale)
@@ -530,7 +531,7 @@ def mutation(N,c,M,x_alive, x_cell, x_sym_in,x_sym_out,x_mut, which_to_mutate_ce
         if i_trait == 2:
             a_trunc = e_cell_min 
             b_trunc = e_cell_max
-            loc = x_cell['e'][i_mutants[i],0]
+            loc = x_cell['e'][i_mutants[i],0] - 2*gamma_cell
             scale = gamma_cell
             a, b = (a_trunc - loc) / scale, (b_trunc - loc) / scale
             delta_cell = truncnorm.rvs(a, b, loc = loc, scale = scale)
@@ -538,7 +539,7 @@ def mutation(N,c,M,x_alive, x_cell, x_sym_in,x_sym_out,x_mut, which_to_mutate_ce
         if i_trait == 3:
             a_trunc = w_cell_min 
             b_trunc = w_cell_max
-            loc = x_cell['w'][i_mutants[i],0]
+            loc = x_cell['w'][i_mutants[i],0] - 2*gamma_cell
             scale = gamma_cell/100
             a, b = (a_trunc - loc) / scale, (b_trunc - loc) / scale
             delta_cell = truncnorm.rvs(a, b, loc = loc, scale = scale)
@@ -573,7 +574,7 @@ def mutation(N,c,M,x_alive, x_cell, x_sym_in,x_sym_out,x_mut, which_to_mutate_ce
         if i_trait == 0:
             a_trunc = s_sym_in_min 
             b_trunc = s_sym_in_max
-            loc = x_sym_in['s'][i_mutants[i],j_mutants[i]] 
+            loc = x_sym_in['s'][i_mutants[i],j_mutants[i]] -2*gamma_sym_in
             scale = gamma_sym_in
             a, b = (a_trunc - loc) / scale, (b_trunc - loc) / scale
             delta_in = truncnorm.rvs(a, b, loc = loc, scale = scale)
@@ -581,7 +582,7 @@ def mutation(N,c,M,x_alive, x_cell, x_sym_in,x_sym_out,x_mut, which_to_mutate_ce
         if i_trait == 1:
             a_trunc = h_sym_in_min 
             b_trunc = h_sym_in_max
-            loc = x_sym_in['h'][i_mutants[i],j_mutants[i]] 
+            loc = x_sym_in['h'][i_mutants[i],j_mutants[i]] -2*gamma_sym_in
             scale = gamma_sym_in
             a, b = (a_trunc - loc) / scale, (b_trunc - loc) / scale
             delta_in = truncnorm.rvs(a, b, loc = loc, scale = scale)
@@ -589,7 +590,7 @@ def mutation(N,c,M,x_alive, x_cell, x_sym_in,x_sym_out,x_mut, which_to_mutate_ce
         if i_trait == 2:    
             a_trunc = e_sym_in_min 
             b_trunc = e_sym_in_max
-            loc = x_sym_in['e'][i_mutants[i],j_mutants[i]] 
+            loc = x_sym_in['e'][i_mutants[i],j_mutants[i]] -2*gamma_sym_in
             scale = gamma_sym_in
             a, b = (a_trunc - loc) / scale, (b_trunc - loc) / scale
             delta_in = truncnorm.rvs(a, b, loc = loc, scale = scale)
@@ -630,7 +631,7 @@ def mutation(N,c,M,x_alive, x_cell, x_sym_in,x_sym_out,x_mut, which_to_mutate_ce
         if i_trait == 0:
             a_trunc = s_sym_out_min 
             b_trunc = s_sym_out_max
-            loc = x_sym_out_copy['s'][0,i_mutants_out[i]]
+            loc = x_sym_out_copy['s'][0,i_mutants_out[i]] -2*gamma_sym_out
             scale = gamma_sym_out
             a, b = (a_trunc - loc) / scale, (b_trunc - loc) / scale
             delta_out = truncnorm.rvs(a, b, loc = loc, scale = scale)
@@ -638,7 +639,7 @@ def mutation(N,c,M,x_alive, x_cell, x_sym_in,x_sym_out,x_mut, which_to_mutate_ce
         if i_trait == 1:
             a_trunc = h_sym_out_min 
             b_trunc = h_sym_out_max
-            loc = x_sym_out_copy['h'][0,i_mutants_out[i]]
+            loc = x_sym_out_copy['h'][0,i_mutants_out[i]] -2*gamma_sym_out
             scale = gamma_sym_out
             a, b = (a_trunc - loc) / scale, (b_trunc - loc) / scale
             delta_out = truncnorm.rvs(a, b, loc = loc, scale = scale)
@@ -646,7 +647,7 @@ def mutation(N,c,M,x_alive, x_cell, x_sym_in,x_sym_out,x_mut, which_to_mutate_ce
         if i_trait == 2:
             a_trunc = e_sym_out_min 
             b_trunc = e_sym_out_max
-            loc = x_sym_out_copy['e'][0,i_mutants_out[i]]
+            loc = x_sym_out_copy['e'][0,i_mutants_out[i]] -2*gamma_sym_out
             scale = gamma_sym_out
             a, b = (a_trunc - loc) / scale, (b_trunc - loc) / scale
             delta_out = truncnorm.rvs(a, b, loc = loc, scale = scale)
@@ -981,7 +982,7 @@ if __name__ == "__main__":
     R = 0.001
 
     N = 10**(3)
-    c = 50
+    c = 5
     M = 10**(3)
 
     D_cell = 0.2
@@ -992,11 +993,10 @@ if __name__ == "__main__":
     which_to_mutate_cell = np.arange(1,3) # 0 = s, 1 = h, 2 = e, 3 = w
     which_to_mutate_sym = np.arange(1,3) # 0 = s, 1 = h, 2 = e
 
-    epsilon_cell_large = 0.001
-    epsilon_sym_large = 0.0005 #u_sym*L
+    epsilon_cell = 0.001
+    epsilon_sym = 0.001 #u_sym*L
 
-    epsilon_cell_small = 0.00001
-    epsilon_sym_small = 0.00001 #u_sym*L
+   
 
 
     gamma_cell = 0.05
@@ -1038,9 +1038,9 @@ if __name__ == "__main__":
     num_file = 'I'
     N_sim = 1
     
-    n_split = 2
-    e_sym_tmp = np.linspace(-0.5,0.5,n_split)
-    e_cell_tmp = np.linspace(-0.5,0.5,n_split)
+    n_split = 6
+    e_sym_tmp = np.linspace(-0.8,0.8,n_split)
+    e_cell_tmp = np.linspace(-0.8,0.8,n_split)
     e_pairs = np.round(pairwise_combinations(e_sym_tmp,e_cell_tmp),2)
 
 
@@ -1053,8 +1053,8 @@ if __name__ == "__main__":
     e_for_cells_ls = list(e_pairs[:,1])
 
     N_sim_ls = n_args*[N_sim]
-    epsilon_cell_ls = n_args*[epsilon_cell_large] 
-    epsilon_sym_ls = n_args*[epsilon_sym_large] 
+    epsilon_cell_ls = n_args*[epsilon_cell] 
+    epsilon_sym_ls = n_args*[epsilon_sym] 
     gamma_cell_ls = n_args*[gamma_cell]
     gamma_sym_ls = n_args*[gamma_sym]
     
