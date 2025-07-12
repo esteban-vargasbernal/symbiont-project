@@ -33,21 +33,21 @@ N_sim = 20
 n_split = 6
 N_gen_max = 500
 
-e_for_symbionts_ls = np.linspace(-0.5,0.5,n_split)
-e_for_cells_ls = np.linspace(-0.5,0.5,n_split)
+e_for_symbionts_ls = np.linspace(-0.8,0.8,n_split)
+e_for_cells_ls = np.linspace(-0.8,0.8,n_split)
 
 h_sym = 0
 h_cell = 0
 
-e_sym = -0.5
-e_cell = -0.5
+e_sym = -0.8
+e_cell = -0.8
 
 theta_cell_0 = e_sym + h_cell 
 theta_sym_0 = e_cell + h_sym 
 
 
-for theta_cell_0 in [-0.5,0.5]:
-    for theta_sym_0 in [-0.5,0.5]:
+for theta_cell_0 in [-0.8,0.8]:
+    for theta_sym_0 in [-0.8,0.8]:
 
         R = 0.01
         circle = Circle((theta_cell_0, theta_sym_0), radius = R, color='blue', fill=False, linewidth=2)
@@ -185,8 +185,8 @@ for i in np.arange(n_split):
         plt.grid()
         plt.arrow(theta_cell_0, theta_sym_0, 10*R/(1+sd_xy**2)*mean_x, 10*R/(1+sd_xy**2)*mean_y, width=0.005)
 
-plt.hlines(y = 0, xmin=-0.55, xmax =0.55, color = "red", linewidth = 3)
-plt.vlines(x = 0, ymin =-0.55, ymax = 0.55, color = "red", linewidth = 3)
+plt.hlines(y = 0, xmin=-0.85, xmax =0.85, color = "red", linewidth = 3)
+plt.vlines(x = 0, ymin =-0.85, ymax = 0.85, color = "red", linewidth = 3)
 #plt.xlim(-1,2)
 #plt.ylim(-1,1.2)
 plt.xlabel(r'$\theta_{\text{host}} = e_{\text{sym}} + h_{\text{host}}$', fontsize = 16)
@@ -205,8 +205,8 @@ plt.colorbar()
 plt.xlabel(r'$\theta_{\text{host}} = e_{\text{sym}} + h_{\text{host}}$', fontsize = 16)
 plt.ylabel(r'$\theta_{\text{sym}} = e_{\text{host}} + h_{\text{sym}}$', fontsize = 16)
 plt.title(r'$\|(\Delta \theta_{\text{host}}, \Delta \theta_{\text{sym}})\|$, '+r'$\epsilon_{\text{host}}$ = '+ str(epsilon_cell)+ r', $\epsilon_{\text{sym}} = $'+str(epsilon_sym), fontsize = 15)
-plt.hlines(y = 0, xmin=-0.55, xmax =0.55, color = "red", linewidth = 3)
-plt.vlines(x = 0, ymin =-0.55, ymax = 0.55, color = "red", linewidth = 3)
+plt.hlines(y = 0, xmin=-0.85, xmax =0.85, color = "red", linewidth = 3)
+plt.vlines(x = 0, ymin =-0.85, ymax = 0.85, color = "red", linewidth = 3)
 #plt.savefig('Figures/diagonal_change.png')
 plt.savefig('Figures/diagonal_change_'+type_plot+'.png')
 plt.show()
@@ -217,8 +217,8 @@ plt.colorbar()
 plt.xlabel(r'$\theta_{\text{host}} = e_{\text{sym}} + h_{\text{host}}$', fontsize = 16)
 plt.ylabel(r'$\theta_{\text{sym}} = e_{\text{host}} + h_{\text{sym}}$', fontsize = 16)
 plt.title('p-value for '+ r'$\Delta \theta_{\text{host}}$, ' + r'$\epsilon_{\text{host}}$ = '+ str(epsilon_cell)+ r', $\epsilon_{\text{sym}} = $'+str(epsilon_sym), fontsize = 15)
-plt.hlines(y = 0, xmin=-0.55, xmax =0.55, color = "red", linewidth = 3)
-plt.vlines(x = 0, ymin =-0.55, ymax = 0.55, color = "red", linewidth = 3)
+plt.hlines(y = 0, xmin=-0.85, xmax =0.85, color = "red", linewidth = 3)
+plt.vlines(x = 0, ymin =-0.85, ymax = 0.85, color = "red", linewidth = 3)
 #plt.savefig('Figures/all_x_p_value.png')
 plt.savefig('Figures/all_x_p_value_'+type_plot+'.png')
 plt.show()
@@ -228,8 +228,8 @@ plt.colorbar()
 plt.xlabel(r'$\theta_{\text{host}} = e_{\text{sym}} + h_{\text{host}}$', fontsize = 16)
 plt.ylabel(r'$\theta_{\text{sym}} = e_{\text{host}} + h_{\text{sym}}$', fontsize = 16)
 plt.title('p-value for '+ r'$\Delta \theta_{\text{sym}}, $' + r'$\epsilon_{\text{host}}$ = '+ str(epsilon_cell)+ r', $\epsilon_{\text{sym}} = $'+str(epsilon_sym), fontsize = 15)
-plt.hlines(y = 0, xmin=-0.55, xmax =0.55, color = "red", linewidth = 3)
-plt.vlines(x = 0, ymin =-0.55, ymax = 0.55, color = "red", linewidth = 3)
+plt.hlines(y = 0, xmin=-0.85, xmax =0.85, color = "red", linewidth = 3)
+plt.vlines(x = 0, ymin =-0.85, ymax = 0.85, color = "red", linewidth = 3)
 #plt.savefig('Figures/all_y_p_value.png')
 plt.savefig('Figures/all_y_p_value_'+type_plot+'.png')
 plt.show()
@@ -239,8 +239,8 @@ plt.colorbar()
 plt.xlabel(r'$\theta_{\text{host}} = e_{\text{sym}} + h_{\text{host}}$', fontsize = 16)
 plt.ylabel(r'$\theta_{\text{sym}} = e_{\text{host}} + h_{\text{sym}}$', fontsize = 16)
 plt.title('hitting time to the circle '+r'$\epsilon_{\text{host}}$ = '+ str(epsilon_cell)+ r', $\epsilon_{\text{sym}} = $'+str(epsilon_sym), fontsize = 15)
-plt.hlines(y = 0, xmin=-0.55, xmax =0.55, color = "red", linewidth = 3)
-plt.vlines(x = 0, ymin =-0.55, ymax = 0.55, color = "red", linewidth = 3)
+plt.hlines(y = 0, xmin=-0.85, xmax =0.85, color = "red", linewidth = 3)
+plt.vlines(x = 0, ymin =-0.85, ymax = 0.85, color = "red", linewidth = 3)
 #plt.savefig('Figures/all_generations.png')
 plt.savefig('Figures/all_generations_'+type_plot+'.png')
 plt.show()
@@ -261,9 +261,9 @@ df_all = df
 
 
 
-extract_feature = 'w_cell' # 'alive_cell', 'alive_sym_in', 'alive_sym_out', 's_cell'
-N_sim_max = 5
-theta_list = np.linspace(-0.5,0.5,n_split)
+extract_feature = 'alive_cell' # 'alive_cell', 'alive_sym_in', 'alive_sym_out', 's_cell'
+N_sim_max = 20
+theta_list = np.linspace(-0.8,0.8,n_split)
 theta_cell = theta_list[0]
 theta_sym = theta_list[0]
 
@@ -274,17 +274,19 @@ df_tmp = df_tmp[np.round(df_tmp['theta_cell_0'],2)==np.round(theta_cell,2)]
 df_tmp = df_tmp[df_tmp['sim']<N_sim_max]
 
 
-df_plot = df_tmp.pivot(columns = 'sim', index = 'generation')[extract_feature]
+df_plot = df_tmp.pivot(columns = 'sim', index = 'generation')['alive_cell']
 df_plot.plot()
-plt.ylabel(extract_feature, fontsize =16)
+plt.ylabel('Alive hosts', fontsize =16)
+plt.legend('')
 plt.title(r'$\epsilon_{\text{host}}$ = '+ str(epsilon_cell)+ r', $\epsilon_{\text{sym}} = $'+str(epsilon_sym) + r'$, \theta_{\text{host}}$ = '+ str(theta_cell)+ r', $\theta_{\text{sym}} = $'+str(theta_sym), fontsize = 15)
 plt.tight_layout()
 plt.savefig('Figures/'+extract_feature+'_epsilon_host_'+str(epsilon_cell)+'_epsilon_sym_'+str(epsilon_sym)+'_theta_host_'+ str(theta_cell)+ '_theta_sym_'+str(theta_sym)+'.png')
 plt.show()
 
-df_plot = df_tmp.pivot(columns = 'sim', index = 'generation')[['theta_cell','theta_sym']]
+df_plot = df_tmp.pivot(columns = 'sim', index = 'generation')['alive_sym_in']
 df_plot.plot()
-plt.ylabel(r'$\theta_{\text{host}}$, $\theta_{\text{host}}$', fontsize =16)
+plt.ylabel('Alive endosymbionts', fontsize =16)
+plt.legend('')
 plt.title(r'$\epsilon_{\text{host}}$ = '+ str(epsilon_cell)+ r', $\epsilon_{\text{sym}} = $'+str(epsilon_sym)+r'$, \theta_{\text{host}}$ = '+ str(theta_cell)+ r', $\theta_{\text{sym}} = $'+str(theta_sym), fontsize = 15)
 plt.tight_layout()
 plt.savefig('Figures/thetas_zoom_in_epsilon_host_'+str(epsilon_cell)+'_epsilon_sym_'+str(epsilon_sym)+'_theta_host_'+ str(theta_cell)+ '_theta_sym_'+str(theta_sym)+'.png')
